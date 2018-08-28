@@ -1,4 +1,4 @@
-<tool id="seurat" name="Seurat" version="2.3.4">
+<tool id="seurat" name="Seurat" version="2.3.4+galaxy1">
     <description>- toolkit for exploration of single-cell RNA-seq data</description>
     <requirements>
         <requirement type="package" version="3.4.1">r-base</requirement>
@@ -17,11 +17,25 @@ echo $(R --version | grep version | grep -v GNU)", seurat version" $(R --vanilla
 
 Rscript '$__tool_directory__/seurat.R'
 
---counts '$counts'
+#if $ctrl.is_of_type('rds'):
+    --rctrl '$ctrl'
+#else 
+    --ctrl '$ctrl'
+#end if
+
+#if $stim.is_of_type('rds'):
+    --rstim '$stim'
+#else 
+    --stim '$stim'
+#end if
+
+#if $cca:
+    --cca $cca
+#end if
+
 --numPCs $adv.num_PCs
 --min.cells $adv.min_cells
 --min.genes $adv.min_genes
-
 #if $adv.low_thresholds:
     --low.thresholds $adv.low_thresholds
 #end if
@@ -50,17 +64,19 @@ Rscript '$__tool_directory__/seurat.R'
     --logfc.threshold $adv.logfc_threshold
 #end if
 
-#if $rds:
-    --rds '$rds'
+#if $rdata:
+    --rdata '$out_rdata'
 #end if
 
 ]]></command>
 
     <inputs>
-        <param name="counts" type="data" format="tabular" label="Counts file" help="The should be a TAB-separated count matrix with gene identifers in the first column and a header row"/>
+        <param name="ctrl" type="data" format="tabular,rds" label="Ctrl counts file" help="This should be a TAB-separated count matrix with gene identifers in the first column and a header row"/>
+        <param name="stim" type="data" format="tabular,rds" label="Stim counts file" help="Optional. This should be a TAB-separated count matrix with gene identifers in the first column and a header row"/>
+        <param argument="--cca" type="boolean" truevalue="True" falsevalue="False" checked="False" label="Perform canonical correlation analysis (CCA)" help="If 2 counts files are submitted e.g Ctrl and Stim, you can choose to perform CCA. See the Seurat integrated tutorial here: https://satijalab.org/seurat/immune_alignment.html. Default: No"/>
         <param name="rscript" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="False" label="Output Rscript?" help="If this option is set to Yes, the Rscript used by this tool will be provided as a text file in the output. Default: No" />
-        <param name="rds" type="boolean" truevalue="True" falsevalue="False" checked="False" label="Output Seurat RDS object?"
-            help="Output the Seurat RDS object, can be loaded into R. Default: No">
+        <param name="rdata" type="boolean" truevalue="True" falsevalue="False" checked="False" label="Output Seurat RData object?"
+            help="Output the Seurat RData file, can be loaded into R. Default: No">
         </param>
         <section name="adv" title="Advanced Options">
             <param argument="--num_PCs" type="integer" min="0" value="10" label="Number of PCs to use in plots" help="Uses this number of PCs in PCHEatmap, JackStrawPlot, FindClusters, RunTSNE. Default: 10" />
@@ -84,15 +100,17 @@ Rscript '$__tool_directory__/seurat.R'
         <data name="out_rscript" format="txt" from_work_dir="out_rscript.txt" label="${tool.name} on ${on_string}: Rscript">
             <filter>rscript</filter>
         </data>
-        <data name="out_rds" format="rds" from_work_dir="Seurat.rds" label="${tool.name} on ${on_string}: RData file">
-            <filter>rds</filter>
+        <data name="out_rdata" format="rdata" from_work_dir="Seurat.RData" label="${tool.name} on ${on_string}: RData file">
+            <filter>rdata</filter>
         </data>
     </outputs>
 
     <tests>
-        <!-- Ensure count matrix input works -->
+        <!-- Ensure CCA analysis works -->
         <test>
-            <param name="counts" ftype="tabular" value="deng_small.tab.gz"/>
+            <param name="ctrl" ftype="rds" value="ctrl.rds"/>
+            <param name="stim" ftype="rds" value="stim.rds"/>        
+            <param name="cca" value="True" />
             <param name="min_cells" value="3"/>
             <param name="min_genes" value="200"/>
             <param name="low_thresholds" value="1" />
@@ -100,12 +118,12 @@ Rscript '$__tool_directory__/seurat.R'
             <param name="x_low_cutoff" value="0.0125" />
             <param name="x_high_cutoff" value="3" />
             <param name="y_cutoff" value="0.5" />
-            <param name="numPCs" value="10" />
+            <param name="numPCs" value="2" />
             <param name="cells_use" value="500"/>
             <param name="resolution" value="0.6" />
             <param name="min_pct" value="0.25" />
             <param name="logfc_threshold" value="0.25" />
-            <output name="out_pdf" ftype="pdf" value="out.pdf" compare="sim_size"/>
+            <output name="out_pdf" ftype="pdf" value="out_int.pdf" compare="sim_size"/>
         </test>
     </tests>
     <help><![CDATA[
@@ -132,7 +150,7 @@ types of single cell data. See the `Seurat Guided Clustering tutorial`_ for more
 
 Optionally you can choose to output
 
-    * Seurat RDS object (can use within R)
+    * Seurat RData (can use within R)
     * Rscript
 
 .. _Seurat: https://www.nature.com/articles/nbt.4096
