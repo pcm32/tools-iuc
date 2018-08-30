@@ -1,0 +1,857 @@
+<tool id="Seurat_RunTSNE" name="RunTSNE" version="@VERSION@-0.0.1">
+    <description><![CDATA[Run t-distributed Stochastic Neighbor Embedding]]></description>
+    <macros>
+        <import>Seurat_macros.xml</import>
+    </macros>
+    <expand macro="requirements" />
+    <expand macro="stdio" />
+    <expand macro="version_command" />
+    <command><![CDATA[
+        #if "output_r_script" in str( $include_outputs ).split( "," ):
+            cp '${Seurat_RunTSNE_script}' '${output_r_script}' &&
+        #end if
+        Rscript '${Seurat_RunTSNE_script}'
+    ]]>
+    </command>
+    <configfiles>
+         <configfile name="Seurat_RunTSNE_script"><![CDATA[#!/usr/bin/env RScript
+#set $include_files = str( $include_outputs ).split( "," )
+library(Seurat)
+#set $___USE_COMMA___ = ""
+rval <- RunTSNE(
+#if str( $object_type.object_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $object_type.object_type.object_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $object_type.object_type.object_type_selector ) == 'dataset':
+                                                                 object = readRDS("${object_type.object_type.object}")
+                                                             #elif str( $object_type.object_type.object_type_selector ) == 'text':
+                                                                 object = "${ object_type.object_type.object }"
+                                                             #elif str( $object_type.object_type.object_type_selector ) == 'integer':
+                                                                 object = ${ object_type.object_type.object }
+                                                             #elif str( $object_type.object_type.object_type_selector ) == 'float':
+                                                                 object = ${ object_type.object_type.object }
+                                                             #elif str( $object_type.object_type.object_type_selector ) == 'boolean':
+                                                                 object = ${ object_type.object_type.object }
+                                                             #elif str( $object_type.object_type.object_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 object = "${ object_type.object_type.object }"
+                                                             #elif str( $object_type.object_type.object_type_selector ) == 'NULL':
+                                                                 object = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $reduction_use_type.reduction_use_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $reduction_use_type.reduction_use_type.reduction_use_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $reduction_use_type.reduction_use_type.reduction_use_type_selector ) == 'dataset':
+                                                                 reduction.use = readRDS("${reduction_use_type.reduction_use_type.reduction_use}")
+                                                             #elif str( $reduction_use_type.reduction_use_type.reduction_use_type_selector ) == 'text':
+                                                                 reduction.use = "${ reduction_use_type.reduction_use_type.reduction_use }"
+                                                             #elif str( $reduction_use_type.reduction_use_type.reduction_use_type_selector ) == 'integer':
+                                                                 reduction.use = ${ reduction_use_type.reduction_use_type.reduction_use }
+                                                             #elif str( $reduction_use_type.reduction_use_type.reduction_use_type_selector ) == 'float':
+                                                                 reduction.use = ${ reduction_use_type.reduction_use_type.reduction_use }
+                                                             #elif str( $reduction_use_type.reduction_use_type.reduction_use_type_selector ) == 'boolean':
+                                                                 reduction.use = ${ reduction_use_type.reduction_use_type.reduction_use }
+                                                             #elif str( $reduction_use_type.reduction_use_type.reduction_use_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 reduction.use = "${ reduction_use_type.reduction_use_type.reduction_use }"
+                                                             #elif str( $reduction_use_type.reduction_use_type.reduction_use_type_selector ) == 'NULL':
+                                                                 reduction.use = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $cells_use_type.cells_use_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $cells_use_type.cells_use_type.cells_use_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $cells_use_type.cells_use_type.cells_use_type_selector ) == 'dataset':
+                                                                 cells.use = readRDS("${cells_use_type.cells_use_type.cells_use}")
+                                                             #elif str( $cells_use_type.cells_use_type.cells_use_type_selector ) == 'text':
+                                                                 cells.use = "${ cells_use_type.cells_use_type.cells_use }"
+                                                             #elif str( $cells_use_type.cells_use_type.cells_use_type_selector ) == 'integer':
+                                                                 cells.use = ${ cells_use_type.cells_use_type.cells_use }
+                                                             #elif str( $cells_use_type.cells_use_type.cells_use_type_selector ) == 'float':
+                                                                 cells.use = ${ cells_use_type.cells_use_type.cells_use }
+                                                             #elif str( $cells_use_type.cells_use_type.cells_use_type_selector ) == 'boolean':
+                                                                 cells.use = ${ cells_use_type.cells_use_type.cells_use }
+                                                             #elif str( $cells_use_type.cells_use_type.cells_use_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 cells.use = "${ cells_use_type.cells_use_type.cells_use }"
+                                                             #elif str( $cells_use_type.cells_use_type.cells_use_type_selector ) == 'NULL':
+                                                                 cells.use = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $dims_use_type.dims_use_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $dims_use_type.dims_use_type.dims_use_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $dims_use_type.dims_use_type.dims_use_type_selector ) == 'dataset':
+                                                                 dims.use = readRDS("${dims_use_type.dims_use_type.dims_use}")
+                                                             #elif str( $dims_use_type.dims_use_type.dims_use_type_selector ) == 'text':
+                                                                 dims.use = "${ dims_use_type.dims_use_type.dims_use }"
+                                                             #elif str( $dims_use_type.dims_use_type.dims_use_type_selector ) == 'integer':
+                                                                 dims.use = ${ dims_use_type.dims_use_type.dims_use }
+                                                             #elif str( $dims_use_type.dims_use_type.dims_use_type_selector ) == 'float':
+                                                                 dims.use = ${ dims_use_type.dims_use_type.dims_use }
+                                                             #elif str( $dims_use_type.dims_use_type.dims_use_type_selector ) == 'boolean':
+                                                                 dims.use = ${ dims_use_type.dims_use_type.dims_use }
+                                                             #elif str( $dims_use_type.dims_use_type.dims_use_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 dims.use = "${ dims_use_type.dims_use_type.dims_use }"
+                                                             #elif str( $dims_use_type.dims_use_type.dims_use_type_selector ) == 'NULL':
+                                                                 dims.use = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $genes_use_type.genes_use_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $genes_use_type.genes_use_type.genes_use_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $genes_use_type.genes_use_type.genes_use_type_selector ) == 'dataset':
+                                                                 genes.use = readRDS("${genes_use_type.genes_use_type.genes_use}")
+                                                             #elif str( $genes_use_type.genes_use_type.genes_use_type_selector ) == 'text':
+                                                                 genes.use = "${ genes_use_type.genes_use_type.genes_use }"
+                                                             #elif str( $genes_use_type.genes_use_type.genes_use_type_selector ) == 'integer':
+                                                                 genes.use = ${ genes_use_type.genes_use_type.genes_use }
+                                                             #elif str( $genes_use_type.genes_use_type.genes_use_type_selector ) == 'float':
+                                                                 genes.use = ${ genes_use_type.genes_use_type.genes_use }
+                                                             #elif str( $genes_use_type.genes_use_type.genes_use_type_selector ) == 'boolean':
+                                                                 genes.use = ${ genes_use_type.genes_use_type.genes_use }
+                                                             #elif str( $genes_use_type.genes_use_type.genes_use_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 genes.use = "${ genes_use_type.genes_use_type.genes_use }"
+                                                             #elif str( $genes_use_type.genes_use_type.genes_use_type_selector ) == 'NULL':
+                                                                 genes.use = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $seed_use_type.seed_use_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $seed_use_type.seed_use_type.seed_use_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $seed_use_type.seed_use_type.seed_use_type_selector ) == 'dataset':
+                                                                 seed.use = readRDS("${seed_use_type.seed_use_type.seed_use}")
+                                                             #elif str( $seed_use_type.seed_use_type.seed_use_type_selector ) == 'text':
+                                                                 seed.use = "${ seed_use_type.seed_use_type.seed_use }"
+                                                             #elif str( $seed_use_type.seed_use_type.seed_use_type_selector ) == 'integer':
+                                                                 seed.use = ${ seed_use_type.seed_use_type.seed_use }
+                                                             #elif str( $seed_use_type.seed_use_type.seed_use_type_selector ) == 'float':
+                                                                 seed.use = ${ seed_use_type.seed_use_type.seed_use }
+                                                             #elif str( $seed_use_type.seed_use_type.seed_use_type_selector ) == 'boolean':
+                                                                 seed.use = ${ seed_use_type.seed_use_type.seed_use }
+                                                             #elif str( $seed_use_type.seed_use_type.seed_use_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 seed.use = "${ seed_use_type.seed_use_type.seed_use }"
+                                                             #elif str( $seed_use_type.seed_use_type.seed_use_type_selector ) == 'NULL':
+                                                                 seed.use = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $tsne_method_type.tsne_method_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $tsne_method_type.tsne_method_type.tsne_method_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $tsne_method_type.tsne_method_type.tsne_method_type_selector ) == 'dataset':
+                                                                 tsne.method = readRDS("${tsne_method_type.tsne_method_type.tsne_method}")
+                                                             #elif str( $tsne_method_type.tsne_method_type.tsne_method_type_selector ) == 'text':
+                                                                 tsne.method = "${ tsne_method_type.tsne_method_type.tsne_method }"
+                                                             #elif str( $tsne_method_type.tsne_method_type.tsne_method_type_selector ) == 'integer':
+                                                                 tsne.method = ${ tsne_method_type.tsne_method_type.tsne_method }
+                                                             #elif str( $tsne_method_type.tsne_method_type.tsne_method_type_selector ) == 'float':
+                                                                 tsne.method = ${ tsne_method_type.tsne_method_type.tsne_method }
+                                                             #elif str( $tsne_method_type.tsne_method_type.tsne_method_type_selector ) == 'boolean':
+                                                                 tsne.method = ${ tsne_method_type.tsne_method_type.tsne_method }
+                                                             #elif str( $tsne_method_type.tsne_method_type.tsne_method_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 tsne.method = "${ tsne_method_type.tsne_method_type.tsne_method }"
+                                                             #elif str( $tsne_method_type.tsne_method_type.tsne_method_type_selector ) == 'NULL':
+                                                                 tsne.method = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $add_iter_type.add_iter_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $add_iter_type.add_iter_type.add_iter_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $add_iter_type.add_iter_type.add_iter_type_selector ) == 'dataset':
+                                                                 add.iter = readRDS("${add_iter_type.add_iter_type.add_iter}")
+                                                             #elif str( $add_iter_type.add_iter_type.add_iter_type_selector ) == 'text':
+                                                                 add.iter = "${ add_iter_type.add_iter_type.add_iter }"
+                                                             #elif str( $add_iter_type.add_iter_type.add_iter_type_selector ) == 'integer':
+                                                                 add.iter = ${ add_iter_type.add_iter_type.add_iter }
+                                                             #elif str( $add_iter_type.add_iter_type.add_iter_type_selector ) == 'float':
+                                                                 add.iter = ${ add_iter_type.add_iter_type.add_iter }
+                                                             #elif str( $add_iter_type.add_iter_type.add_iter_type_selector ) == 'boolean':
+                                                                 add.iter = ${ add_iter_type.add_iter_type.add_iter }
+                                                             #elif str( $add_iter_type.add_iter_type.add_iter_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 add.iter = "${ add_iter_type.add_iter_type.add_iter }"
+                                                             #elif str( $add_iter_type.add_iter_type.add_iter_type_selector ) == 'NULL':
+                                                                 add.iter = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $dim_embed_type.dim_embed_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $dim_embed_type.dim_embed_type.dim_embed_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $dim_embed_type.dim_embed_type.dim_embed_type_selector ) == 'dataset':
+                                                                 dim.embed = readRDS("${dim_embed_type.dim_embed_type.dim_embed}")
+                                                             #elif str( $dim_embed_type.dim_embed_type.dim_embed_type_selector ) == 'text':
+                                                                 dim.embed = "${ dim_embed_type.dim_embed_type.dim_embed }"
+                                                             #elif str( $dim_embed_type.dim_embed_type.dim_embed_type_selector ) == 'integer':
+                                                                 dim.embed = ${ dim_embed_type.dim_embed_type.dim_embed }
+                                                             #elif str( $dim_embed_type.dim_embed_type.dim_embed_type_selector ) == 'float':
+                                                                 dim.embed = ${ dim_embed_type.dim_embed_type.dim_embed }
+                                                             #elif str( $dim_embed_type.dim_embed_type.dim_embed_type_selector ) == 'boolean':
+                                                                 dim.embed = ${ dim_embed_type.dim_embed_type.dim_embed }
+                                                             #elif str( $dim_embed_type.dim_embed_type.dim_embed_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 dim.embed = "${ dim_embed_type.dim_embed_type.dim_embed }"
+                                                             #elif str( $dim_embed_type.dim_embed_type.dim_embed_type_selector ) == 'NULL':
+                                                                 dim.embed = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $distance_matrix_type.distance_matrix_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $distance_matrix_type.distance_matrix_type.distance_matrix_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $distance_matrix_type.distance_matrix_type.distance_matrix_type_selector ) == 'dataset':
+                                                                 distance.matrix = readRDS("${distance_matrix_type.distance_matrix_type.distance_matrix}")
+                                                             #elif str( $distance_matrix_type.distance_matrix_type.distance_matrix_type_selector ) == 'text':
+                                                                 distance.matrix = "${ distance_matrix_type.distance_matrix_type.distance_matrix }"
+                                                             #elif str( $distance_matrix_type.distance_matrix_type.distance_matrix_type_selector ) == 'integer':
+                                                                 distance.matrix = ${ distance_matrix_type.distance_matrix_type.distance_matrix }
+                                                             #elif str( $distance_matrix_type.distance_matrix_type.distance_matrix_type_selector ) == 'float':
+                                                                 distance.matrix = ${ distance_matrix_type.distance_matrix_type.distance_matrix }
+                                                             #elif str( $distance_matrix_type.distance_matrix_type.distance_matrix_type_selector ) == 'boolean':
+                                                                 distance.matrix = ${ distance_matrix_type.distance_matrix_type.distance_matrix }
+                                                             #elif str( $distance_matrix_type.distance_matrix_type.distance_matrix_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 distance.matrix = "${ distance_matrix_type.distance_matrix_type.distance_matrix }"
+                                                             #elif str( $distance_matrix_type.distance_matrix_type.distance_matrix_type_selector ) == 'NULL':
+                                                                 distance.matrix = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $reduction_name_type.reduction_name_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $reduction_name_type.reduction_name_type.reduction_name_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $reduction_name_type.reduction_name_type.reduction_name_type_selector ) == 'dataset':
+                                                                 reduction.name = readRDS("${reduction_name_type.reduction_name_type.reduction_name}")
+                                                             #elif str( $reduction_name_type.reduction_name_type.reduction_name_type_selector ) == 'text':
+                                                                 reduction.name = "${ reduction_name_type.reduction_name_type.reduction_name }"
+                                                             #elif str( $reduction_name_type.reduction_name_type.reduction_name_type_selector ) == 'integer':
+                                                                 reduction.name = ${ reduction_name_type.reduction_name_type.reduction_name }
+                                                             #elif str( $reduction_name_type.reduction_name_type.reduction_name_type_selector ) == 'float':
+                                                                 reduction.name = ${ reduction_name_type.reduction_name_type.reduction_name }
+                                                             #elif str( $reduction_name_type.reduction_name_type.reduction_name_type_selector ) == 'boolean':
+                                                                 reduction.name = ${ reduction_name_type.reduction_name_type.reduction_name }
+                                                             #elif str( $reduction_name_type.reduction_name_type.reduction_name_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 reduction.name = "${ reduction_name_type.reduction_name_type.reduction_name }"
+                                                             #elif str( $reduction_name_type.reduction_name_type.reduction_name_type_selector ) == 'NULL':
+                                                                 reduction.name = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $reduction_key_type.reduction_key_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $reduction_key_type.reduction_key_type.reduction_key_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $reduction_key_type.reduction_key_type.reduction_key_type_selector ) == 'dataset':
+                                                                 reduction.key = readRDS("${reduction_key_type.reduction_key_type.reduction_key}")
+                                                             #elif str( $reduction_key_type.reduction_key_type.reduction_key_type_selector ) == 'text':
+                                                                 reduction.key = "${ reduction_key_type.reduction_key_type.reduction_key }"
+                                                             #elif str( $reduction_key_type.reduction_key_type.reduction_key_type_selector ) == 'integer':
+                                                                 reduction.key = ${ reduction_key_type.reduction_key_type.reduction_key }
+                                                             #elif str( $reduction_key_type.reduction_key_type.reduction_key_type_selector ) == 'float':
+                                                                 reduction.key = ${ reduction_key_type.reduction_key_type.reduction_key }
+                                                             #elif str( $reduction_key_type.reduction_key_type.reduction_key_type_selector ) == 'boolean':
+                                                                 reduction.key = ${ reduction_key_type.reduction_key_type.reduction_key }
+                                                             #elif str( $reduction_key_type.reduction_key_type.reduction_key_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 reduction.key = "${ reduction_key_type.reduction_key_type.reduction_key }"
+                                                             #elif str( $reduction_key_type.reduction_key_type.reduction_key_type_selector ) == 'NULL':
+                                                                 reduction.key = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+${___USE_COMMA___}
+                                                #set $___USE_COMMA___ = ","
+                                                #for eli in $___ellipsis___:
+                                                    #if str( $eli.argument_type.argument_type_selector ) != 'skip':
+                                                         #set $___USE_COMMA___ = ","
+
+                                                         #if str( $eli.argument_type.argument_type_selector ) == 'dataset':
+                                                             ${eli.argument_name} = readRDS("${eli.argument_type.argument}")
+                                                         #elif str( $eli.argument_type.argument_type_selector ) == 'text':
+                                                             ${eli.argument_name} = "${eli.argument_type.argument}"
+                                                         #elif str( $eli.argument_type.argument_type_selector ) == 'integer':
+                                                             ${eli.argument_name} = ${eli.argument_type.argument}
+                                                         #elif str( $eli.argument_type.argument_type_selector ) == 'float':
+                                                             ${eli.argument_name} = ${eli.argument_type.argument}
+                                                         #elif str( $eli.argument_type.argument_type_selector ) == 'boolean':
+                                                             ${eli.argument_name} = ${eli.argument_type.argument}
+                                                         #elif str( $eli.argument_type.argument_type_selector ) == 'select':
+                                                             #raise ValueError( 'not implemented' )
+                                                             ${eli.argument_name} = "${eli.argument_type.argument}"
+                                                         #elif str( $eli.argument_type.argument_type_selector ) == 'NULL':
+                                                             ${eli.argument_name} = NULL
+                                                         #end if
+                                                     #end if
+                                                #end for
+                                                
+)
+#if "output_r_dataset" in $include_files:
+    saveRDS(rval, file = "${output_r_dataset}", ascii = FALSE, version = 2, compress = TRUE )
+#end if
+
+    ]]>
+         </configfile>
+    </configfiles>
+    <inputs>
+        
+        <conditional name="object_type">
+            <param name="object_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="object: Provide value"/>
+            <when value="True">
+                
+        <conditional name="object_type">
+            <param name="object_type_selector" type="select" label="object: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="object" type="data" format="rds" label="object" help="$object"/>
+            </when>
+            <when value="text">
+                <param name="object" type="text" value="" label="object" help="$object"/>
+            </when>
+            <when value="integer">
+                <param name="object" type="integer" value="" label="object" help="$object"/>
+            </when>
+            <when value="float">
+                <param name="object" type="float" value="" label="object" help="$object"/>
+            </when>
+            <when value="boolean">
+                <param name="object" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="object" help="$object"/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="reduction_use_type">
+            <param name="reduction_use_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="reduction_use: Provide value"/>
+            <when value="True">
+                <param name="reduction_use" type="text" value="pca" label="reduction.use" help='$reduction.use&#10;[1] "pca"'/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="cells_use_type">
+            <param name="cells_use_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="cells_use: Provide value"/>
+            <when value="True">
+                
+        <conditional name="cells_use_type">
+            <param name="cells_use_type_selector" type="select" label="cells_use: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="cells_use" type="data" format="rds" label="cells.use" help="$cells.use&#10;NULL"/>
+            </when>
+            <when value="text">
+                <param name="cells_use" type="text" value="" label="cells.use" help="$cells.use&#10;NULL"/>
+            </when>
+            <when value="integer">
+                <param name="cells_use" type="integer" value="" label="cells.use" help="$cells.use&#10;NULL"/>
+            </when>
+            <when value="float">
+                <param name="cells_use" type="float" value="" label="cells.use" help="$cells.use&#10;NULL"/>
+            </when>
+            <when value="boolean">
+                <param name="cells_use" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="cells.use" help="$cells.use&#10;NULL"/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="dims_use_type">
+            <param name="dims_use_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="dims_use: Provide value"/>
+            <when value="True">
+                
+        <conditional name="dims_use_type">
+            <param name="dims_use_type_selector" type="select" label="dims_use: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="dims_use" type="data" format="rds" label="dims.use" help="$dims.use&#10;1:5"/>
+            </when>
+            <when value="text">
+                <param name="dims_use" type="text" value="" label="dims.use" help="$dims.use&#10;1:5"/>
+            </when>
+            <when value="integer">
+                <param name="dims_use" type="integer" value="" label="dims.use" help="$dims.use&#10;1:5"/>
+            </when>
+            <when value="float">
+                <param name="dims_use" type="float" value="" label="dims.use" help="$dims.use&#10;1:5"/>
+            </when>
+            <when value="boolean">
+                <param name="dims_use" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="dims.use" help="$dims.use&#10;1:5"/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="genes_use_type">
+            <param name="genes_use_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="genes_use: Provide value"/>
+            <when value="True">
+                
+        <conditional name="genes_use_type">
+            <param name="genes_use_type_selector" type="select" label="genes_use: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="genes_use" type="data" format="rds" label="genes.use" help="$genes.use&#10;NULL"/>
+            </when>
+            <when value="text">
+                <param name="genes_use" type="text" value="" label="genes.use" help="$genes.use&#10;NULL"/>
+            </when>
+            <when value="integer">
+                <param name="genes_use" type="integer" value="" label="genes.use" help="$genes.use&#10;NULL"/>
+            </when>
+            <when value="float">
+                <param name="genes_use" type="float" value="" label="genes.use" help="$genes.use&#10;NULL"/>
+            </when>
+            <when value="boolean">
+                <param name="genes_use" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="genes.use" help="$genes.use&#10;NULL"/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="seed_use_type">
+            <param name="seed_use_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="seed_use: Provide value"/>
+            <when value="True">
+                <param name="seed_use" type="float" value="1.0" label="seed.use" help="$seed.use&#10;[1] 1"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="tsne_method_type">
+            <param name="tsne_method_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="tsne_method: Provide value"/>
+            <when value="True">
+                <param name="tsne_method" type="text" value="Rtsne" label="tsne.method" help='$tsne.method&#10;[1] "Rtsne"'/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="add_iter_type">
+            <param name="add_iter_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="add_iter: Provide value"/>
+            <when value="True">
+                <param name="add_iter" type="float" value="0.0" label="add.iter" help="$add.iter&#10;[1] 0"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="dim_embed_type">
+            <param name="dim_embed_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="dim_embed: Provide value"/>
+            <when value="True">
+                <param name="dim_embed" type="float" value="2.0" label="dim.embed" help="$dim.embed&#10;[1] 2"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="distance_matrix_type">
+            <param name="distance_matrix_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="distance_matrix: Provide value"/>
+            <when value="True">
+                
+        <conditional name="distance_matrix_type">
+            <param name="distance_matrix_type_selector" type="select" label="distance_matrix: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="distance_matrix" type="data" format="rds" label="distance.matrix" help="$distance.matrix&#10;NULL"/>
+            </when>
+            <when value="text">
+                <param name="distance_matrix" type="text" value="" label="distance.matrix" help="$distance.matrix&#10;NULL"/>
+            </when>
+            <when value="integer">
+                <param name="distance_matrix" type="integer" value="" label="distance.matrix" help="$distance.matrix&#10;NULL"/>
+            </when>
+            <when value="float">
+                <param name="distance_matrix" type="float" value="" label="distance.matrix" help="$distance.matrix&#10;NULL"/>
+            </when>
+            <when value="boolean">
+                <param name="distance_matrix" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="distance.matrix" help="$distance.matrix&#10;NULL"/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="reduction_name_type">
+            <param name="reduction_name_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="reduction_name: Provide value"/>
+            <when value="True">
+                <param name="reduction_name" type="text" value="tsne" label="reduction.name" help='$reduction.name&#10;[1] "tsne"'/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="reduction_key_type">
+            <param name="reduction_key_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="reduction_key: Provide value"/>
+            <when value="True">
+                <param name="reduction_key" type="text" value="tSNE_" label="reduction.key" help='$reduction.key&#10;[1] "tSNE_"'/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <repeat name="___ellipsis___" title="Additional argument">
+            <param name="argument_name" type="text" value="" label="Name for argument" help=""/>
+            
+        <conditional name="argument_type">
+            <param name="argument_type_selector" type="select" label="argument: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="argument" type="data" format="rds" label="Argument value" help=""/>
+            </when>
+            <when value="text">
+                <param name="argument" type="text" value="" label="Argument value" help=""/>
+            </when>
+            <when value="integer">
+                <param name="argument" type="integer" value="" label="Argument value" help=""/>
+            </when>
+            <when value="float">
+                <param name="argument" type="float" value="" label="Argument value" help=""/>
+            </when>
+            <when value="boolean">
+                <param name="argument" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="Argument value" help=""/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        </repeat>
+
+        <param name="include_outputs" type="select" multiple="True" label="Datasets to create">
+            <option value="output_r_dataset" selected="true">Results in RDS format</option>
+            <option value="output_r_script" selected="false">R script</option>
+        </param>
+    </inputs>
+    <outputs>
+        <data format="rds" name="output_r_dataset" label="${tool.name} on ${on_string} (RDS)">
+            <filter>"output_r_dataset" in include_outputs</filter>
+        </data>
+        <data format="txt" name="output_r_script" label="${tool.name} on ${on_string} (Rscript)">
+            <filter>"output_r_script" in include_outputs</filter>
+        </data>
+    </outputs>
+    <help><![CDATA[
+Automatically Parsed R Help
+===========================
+
+Title
+-----
+
+::
+  
+  Run t-distributed Stochastic Neighbor Embedding 
+
+Name
+----
+
+::
+  
+  RunTSNE 
+
+Alias
+-----
+
+::
+  
+  RunTSNE 
+
+Description
+-----------
+
+::
+  
+  
+   Run t-SNE dimensionality reduction on selected features. Has the option of
+   running in a reduced dimensional space (i.e. spectral tSNE, recommended),
+   or running based on a set of genes. For details about stored TSNE calculation
+   parameters, see  PrintTSNEParams .
+   
+
+Usage
+-----
+
+::
+  
+  
+   RunTSNE(object, reduction.use = "pca", cells.use = NULL, dims.use = 1:5,
+     genes.use = NULL, seed.use = 1, tsne.method = "Rtsne", add.iter = 0,
+     dim.embed = 2, distance.matrix = NULL, reduction.name = "tsne",
+     reduction.key = "tSNE_", ...)
+   
+
+Arguments
+---------
+
+::
+  
+  
+   object Seurat object 
+   
+   reduction.use Which dimensional reduction (e.g. PCA, ICA) to use for
+   the tSNE. Default is PCA 
+   
+   cells.use Which cells to analyze (default, all cells) 
+   
+   dims.use Which dimensions to use as input features 
+   
+   genes.use If set, run the tSNE on this subset of genes
+   (instead of running on a set of reduced dimensions). Not set (NULL) by default 
+   
+   seed.use Random seed for the t-SNE 
+   
+   tsne.method Select the method to use to compute the tSNE. Available
+   methods are:
+   
+   Rtsne:  Use the Rtsne package Barnes-Hut implementation of tSNE (default) 
+   tsne:  standard tsne - not recommended for large datasets 
+   FIt-SNE:  Use the FFT-accelerated Interpolation-based t-SNE. Based on
+   Kluger Lab code found here: https://github.com/KlugerLab/FIt-SNE 
+   
+   
+   add.iter If an existing tSNE has already been computed, uses the
+   current tSNE to seed the algorithm and then adds additional iterations on top
+   of this 
+   
+   dim.embed The dimensional space of the resulting tSNE embedding
+   (default is 2). For example, set to 3 for a 3d tSNE 
+   
+   distance.matrix If set, runs tSNE on the given distance matrix
+   instead of data matrix (experimental) 
+   
+   reduction.name dimensional reduction name, specifies the position in the object$dr list. tsne by default 
+   
+   reduction.key dimensional reduction key, specifies the string before the number for the dimension names. tSNE_ by default 
+   
+   Additional arguments to the tSNE call. Most commonly used is
+   perplexity (expected number of neighbors default is 30) 
+   
+
+Value
+-----
+
+::
+  
+  
+   Returns a Seurat object with a tSNE embedding in
+   object@dr$tsne@cell.embeddings
+   
+
+Examples
+--------
+
+::
+  
+  
+   pbmc_small
+   # Run tSNE on first five PCs, note that for test dataset (only 80 cells)
+   # we can't use default perplexity of 30
+   pbmc_small <- RunTSNE(pbmc_small, reduction.use = "pca", dims.use = 1:5, perplexity=10)
+   # Run tSNE on first five independent components from ICA
+   pbmc_small <- RunICA(pbmc_small,ics.compute=5)
+   pbmc_small <- RunTSNE(pbmc_small, reduction.use = "ica", dims.use = 1:5, perplexity=10)
+   # Plot results
+   TSNEPlot(pbmc_small)
+    ]]></help>
+<tests>
+    <test>
+    </test>
+</tests>
+<citations>
+</citations>
+</tool>
+<!-- Created automatically using R2-G2: https://github.com/blankenberg/r2g2 -->

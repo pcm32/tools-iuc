@@ -1,0 +1,504 @@
+<tool id="Seurat_FilterCells" name="FilterCells" version="@VERSION@-0.0.1">
+    <description><![CDATA[Return a subset of the Seurat object]]></description>
+    <macros>
+        <import>Seurat_macros.xml</import>
+    </macros>
+    <expand macro="requirements" />
+    <expand macro="stdio" />
+    <expand macro="version_command" />
+    <command><![CDATA[
+        #if "output_r_script" in str( $include_outputs ).split( "," ):
+            cp '${Seurat_FilterCells_script}' '${output_r_script}' &&
+        #end if
+        Rscript '${Seurat_FilterCells_script}'
+    ]]>
+    </command>
+    <configfiles>
+         <configfile name="Seurat_FilterCells_script"><![CDATA[#!/usr/bin/env RScript
+#set $include_files = str( $include_outputs ).split( "," )
+library(Seurat)
+#set $___USE_COMMA___ = ""
+rval <- FilterCells(
+#if str( $object_type.object_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $object_type.object_type.object_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $object_type.object_type.object_type_selector ) == 'dataset':
+                                                                 object = readRDS("${object_type.object_type.object}")
+                                                             #elif str( $object_type.object_type.object_type_selector ) == 'text':
+                                                                 object = "${ object_type.object_type.object }"
+                                                             #elif str( $object_type.object_type.object_type_selector ) == 'integer':
+                                                                 object = ${ object_type.object_type.object }
+                                                             #elif str( $object_type.object_type.object_type_selector ) == 'float':
+                                                                 object = ${ object_type.object_type.object }
+                                                             #elif str( $object_type.object_type.object_type_selector ) == 'boolean':
+                                                                 object = ${ object_type.object_type.object }
+                                                             #elif str( $object_type.object_type.object_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 object = "${ object_type.object_type.object }"
+                                                             #elif str( $object_type.object_type.object_type_selector ) == 'NULL':
+                                                                 object = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $subset_names_type.subset_names_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $subset_names_type.subset_names_type.subset_names_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $subset_names_type.subset_names_type.subset_names_type_selector ) == 'dataset':
+                                                                 subset.names = readRDS("${subset_names_type.subset_names_type.subset_names}")
+                                                             #elif str( $subset_names_type.subset_names_type.subset_names_type_selector ) == 'text':
+                                                                 subset.names = "${ subset_names_type.subset_names_type.subset_names }"
+                                                             #elif str( $subset_names_type.subset_names_type.subset_names_type_selector ) == 'integer':
+                                                                 subset.names = ${ subset_names_type.subset_names_type.subset_names }
+                                                             #elif str( $subset_names_type.subset_names_type.subset_names_type_selector ) == 'float':
+                                                                 subset.names = ${ subset_names_type.subset_names_type.subset_names }
+                                                             #elif str( $subset_names_type.subset_names_type.subset_names_type_selector ) == 'boolean':
+                                                                 subset.names = ${ subset_names_type.subset_names_type.subset_names }
+                                                             #elif str( $subset_names_type.subset_names_type.subset_names_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 subset.names = "${ subset_names_type.subset_names_type.subset_names }"
+                                                             #elif str( $subset_names_type.subset_names_type.subset_names_type_selector ) == 'NULL':
+                                                                 subset.names = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $low_thresholds_type.low_thresholds_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $low_thresholds_type.low_thresholds_type.low_thresholds_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $low_thresholds_type.low_thresholds_type.low_thresholds_type_selector ) == 'dataset':
+                                                                 low.thresholds = readRDS("${low_thresholds_type.low_thresholds_type.low_thresholds}")
+                                                             #elif str( $low_thresholds_type.low_thresholds_type.low_thresholds_type_selector ) == 'text':
+                                                                 low.thresholds = "${ low_thresholds_type.low_thresholds_type.low_thresholds }"
+                                                             #elif str( $low_thresholds_type.low_thresholds_type.low_thresholds_type_selector ) == 'integer':
+                                                                 low.thresholds = ${ low_thresholds_type.low_thresholds_type.low_thresholds }
+                                                             #elif str( $low_thresholds_type.low_thresholds_type.low_thresholds_type_selector ) == 'float':
+                                                                 low.thresholds = ${ low_thresholds_type.low_thresholds_type.low_thresholds }
+                                                             #elif str( $low_thresholds_type.low_thresholds_type.low_thresholds_type_selector ) == 'boolean':
+                                                                 low.thresholds = ${ low_thresholds_type.low_thresholds_type.low_thresholds }
+                                                             #elif str( $low_thresholds_type.low_thresholds_type.low_thresholds_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 low.thresholds = "${ low_thresholds_type.low_thresholds_type.low_thresholds }"
+                                                             #elif str( $low_thresholds_type.low_thresholds_type.low_thresholds_type_selector ) == 'NULL':
+                                                                 low.thresholds = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $high_thresholds_type.high_thresholds_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $high_thresholds_type.high_thresholds_type.high_thresholds_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $high_thresholds_type.high_thresholds_type.high_thresholds_type_selector ) == 'dataset':
+                                                                 high.thresholds = readRDS("${high_thresholds_type.high_thresholds_type.high_thresholds}")
+                                                             #elif str( $high_thresholds_type.high_thresholds_type.high_thresholds_type_selector ) == 'text':
+                                                                 high.thresholds = "${ high_thresholds_type.high_thresholds_type.high_thresholds }"
+                                                             #elif str( $high_thresholds_type.high_thresholds_type.high_thresholds_type_selector ) == 'integer':
+                                                                 high.thresholds = ${ high_thresholds_type.high_thresholds_type.high_thresholds }
+                                                             #elif str( $high_thresholds_type.high_thresholds_type.high_thresholds_type_selector ) == 'float':
+                                                                 high.thresholds = ${ high_thresholds_type.high_thresholds_type.high_thresholds }
+                                                             #elif str( $high_thresholds_type.high_thresholds_type.high_thresholds_type_selector ) == 'boolean':
+                                                                 high.thresholds = ${ high_thresholds_type.high_thresholds_type.high_thresholds }
+                                                             #elif str( $high_thresholds_type.high_thresholds_type.high_thresholds_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 high.thresholds = "${ high_thresholds_type.high_thresholds_type.high_thresholds }"
+                                                             #elif str( $high_thresholds_type.high_thresholds_type.high_thresholds_type_selector ) == 'NULL':
+                                                                 high.thresholds = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $cells_use_type.cells_use_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $cells_use_type.cells_use_type.cells_use_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $cells_use_type.cells_use_type.cells_use_type_selector ) == 'dataset':
+                                                                 cells.use = readRDS("${cells_use_type.cells_use_type.cells_use}")
+                                                             #elif str( $cells_use_type.cells_use_type.cells_use_type_selector ) == 'text':
+                                                                 cells.use = "${ cells_use_type.cells_use_type.cells_use }"
+                                                             #elif str( $cells_use_type.cells_use_type.cells_use_type_selector ) == 'integer':
+                                                                 cells.use = ${ cells_use_type.cells_use_type.cells_use }
+                                                             #elif str( $cells_use_type.cells_use_type.cells_use_type_selector ) == 'float':
+                                                                 cells.use = ${ cells_use_type.cells_use_type.cells_use }
+                                                             #elif str( $cells_use_type.cells_use_type.cells_use_type_selector ) == 'boolean':
+                                                                 cells.use = ${ cells_use_type.cells_use_type.cells_use }
+                                                             #elif str( $cells_use_type.cells_use_type.cells_use_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 cells.use = "${ cells_use_type.cells_use_type.cells_use }"
+                                                             #elif str( $cells_use_type.cells_use_type.cells_use_type_selector ) == 'NULL':
+                                                                 cells.use = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+)
+#if "output_r_dataset" in $include_files:
+    saveRDS(rval, file = "${output_r_dataset}", ascii = FALSE, version = 2, compress = TRUE )
+#end if
+
+    ]]>
+         </configfile>
+    </configfiles>
+    <inputs>
+        
+        <conditional name="object_type">
+            <param name="object_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="object: Provide value"/>
+            <when value="True">
+                
+        <conditional name="object_type">
+            <param name="object_type_selector" type="select" label="object: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="object" type="data" format="rds" label="object" help="$object"/>
+            </when>
+            <when value="text">
+                <param name="object" type="text" value="" label="object" help="$object"/>
+            </when>
+            <when value="integer">
+                <param name="object" type="integer" value="" label="object" help="$object"/>
+            </when>
+            <when value="float">
+                <param name="object" type="float" value="" label="object" help="$object"/>
+            </when>
+            <when value="boolean">
+                <param name="object" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="object" help="$object"/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="subset_names_type">
+            <param name="subset_names_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="subset_names: Provide value"/>
+            <when value="True">
+                
+        <conditional name="subset_names_type">
+            <param name="subset_names_type_selector" type="select" label="subset_names: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="subset_names" type="data" format="rds" label="subset.names" help="$subset.names"/>
+            </when>
+            <when value="text">
+                <param name="subset_names" type="text" value="" label="subset.names" help="$subset.names"/>
+            </when>
+            <when value="integer">
+                <param name="subset_names" type="integer" value="" label="subset.names" help="$subset.names"/>
+            </when>
+            <when value="float">
+                <param name="subset_names" type="float" value="" label="subset.names" help="$subset.names"/>
+            </when>
+            <when value="boolean">
+                <param name="subset_names" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="subset.names" help="$subset.names"/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="low_thresholds_type">
+            <param name="low_thresholds_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="low_thresholds: Provide value"/>
+            <when value="True">
+                
+        <conditional name="low_thresholds_type">
+            <param name="low_thresholds_type_selector" type="select" label="low_thresholds: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="low_thresholds" type="data" format="rds" label="low.thresholds" help="$low.thresholds"/>
+            </when>
+            <when value="text">
+                <param name="low_thresholds" type="text" value="" label="low.thresholds" help="$low.thresholds"/>
+            </when>
+            <when value="integer">
+                <param name="low_thresholds" type="integer" value="" label="low.thresholds" help="$low.thresholds"/>
+            </when>
+            <when value="float">
+                <param name="low_thresholds" type="float" value="" label="low.thresholds" help="$low.thresholds"/>
+            </when>
+            <when value="boolean">
+                <param name="low_thresholds" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="low.thresholds" help="$low.thresholds"/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="high_thresholds_type">
+            <param name="high_thresholds_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="high_thresholds: Provide value"/>
+            <when value="True">
+                
+        <conditional name="high_thresholds_type">
+            <param name="high_thresholds_type_selector" type="select" label="high_thresholds: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="high_thresholds" type="data" format="rds" label="high.thresholds" help="$high.thresholds"/>
+            </when>
+            <when value="text">
+                <param name="high_thresholds" type="text" value="" label="high.thresholds" help="$high.thresholds"/>
+            </when>
+            <when value="integer">
+                <param name="high_thresholds" type="integer" value="" label="high.thresholds" help="$high.thresholds"/>
+            </when>
+            <when value="float">
+                <param name="high_thresholds" type="float" value="" label="high.thresholds" help="$high.thresholds"/>
+            </when>
+            <when value="boolean">
+                <param name="high_thresholds" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="high.thresholds" help="$high.thresholds"/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="cells_use_type">
+            <param name="cells_use_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="cells_use: Provide value"/>
+            <when value="True">
+                
+        <conditional name="cells_use_type">
+            <param name="cells_use_type_selector" type="select" label="cells_use: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="cells_use" type="data" format="rds" label="cells.use" help="$cells.use&#10;NULL"/>
+            </when>
+            <when value="text">
+                <param name="cells_use" type="text" value="" label="cells.use" help="$cells.use&#10;NULL"/>
+            </when>
+            <when value="integer">
+                <param name="cells_use" type="integer" value="" label="cells.use" help="$cells.use&#10;NULL"/>
+            </when>
+            <when value="float">
+                <param name="cells_use" type="float" value="" label="cells.use" help="$cells.use&#10;NULL"/>
+            </when>
+            <when value="boolean">
+                <param name="cells_use" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="cells.use" help="$cells.use&#10;NULL"/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        <param name="include_outputs" type="select" multiple="True" label="Datasets to create">
+            <option value="output_r_dataset" selected="true">Results in RDS format</option>
+            <option value="output_r_script" selected="false">R script</option>
+        </param>
+    </inputs>
+    <outputs>
+        <data format="rds" name="output_r_dataset" label="${tool.name} on ${on_string} (RDS)">
+            <filter>"output_r_dataset" in include_outputs</filter>
+        </data>
+        <data format="txt" name="output_r_script" label="${tool.name} on ${on_string} (Rscript)">
+            <filter>"output_r_script" in include_outputs</filter>
+        </data>
+    </outputs>
+    <help><![CDATA[
+Automatically Parsed R Help
+===========================
+
+Title
+-----
+
+::
+  
+  Return a subset of the Seurat object 
+
+Name
+----
+
+::
+  
+  FilterCells 
+
+Alias
+-----
+
+::
+  
+  FilterCells 
+
+Description
+-----------
+
+::
+  
+  
+   Creates a Seurat object containing only a subset of the cells in the
+   original object. Takes either a list of cells to use as a subset, or a
+   parameter (for example, a gene), to subset on.
+   
+
+Usage
+-----
+
+::
+  
+  
+   FilterCells(object, subset.names, low.thresholds, high.thresholds,
+     cells.use = NULL)
+   
+
+Arguments
+---------
+
+::
+  
+  
+   object Seurat object 
+   
+   subset.names Parameters to subset on. Eg, the name of a gene, PC1, a
+   column name in object@meta.data, etc. Any argument that can be retreived
+   using FetchData 
+   
+   low.thresholds Low cutoffs for the parameters (default is -Inf) 
+   
+   high.thresholds High cutoffs for the parameters (default is Inf) 
+   
+   cells.use A vector of cell names to use as a subset 
+   
+
+Value
+-----
+
+::
+  
+  
+   Returns a Seurat object containing only the relevant subset of cells
+   
+
+Examples
+--------
+
+::
+  
+  
+   head(x = FetchData(object = pbmc_small, vars.all = 'LTB'))
+   pbmc_filtered <- FilterCells(
+     object = pbmc_small,
+     subset.names = 'LTB',
+     high.thresholds = 6
+   )
+   head(x = FetchData(object = pbmc_filtered, vars.all = 'LTB'))
+    ]]></help>
+<tests>
+    <test>
+    </test>
+</tests>
+<citations>
+</citations>
+</tool>
+<!-- Created automatically using R2-G2: https://github.com/blankenberg/r2g2 -->

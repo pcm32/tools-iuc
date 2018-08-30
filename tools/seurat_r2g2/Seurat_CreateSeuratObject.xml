@@ -1,0 +1,814 @@
+<tool id="Seurat_CreateSeuratObject" name="CreateSeuratObject" version="@VERSION@-0.0.1">
+    <description><![CDATA[Initialize and setup the Seurat object]]></description>
+    <macros>
+        <import>Seurat_macros.xml</import>
+    </macros>
+    <expand macro="requirements" />
+    <expand macro="stdio" />
+    <expand macro="version_command" />
+    <command><![CDATA[
+        #if "output_r_script" in str( $include_outputs ).split( "," ):
+            cp '${Seurat_CreateSeuratObject_script}' '${output_r_script}' &&
+        #end if
+        Rscript '${Seurat_CreateSeuratObject_script}'
+    ]]>
+    </command>
+    <configfiles>
+         <configfile name="Seurat_CreateSeuratObject_script"><![CDATA[#!/usr/bin/env RScript
+#set $include_files = str( $include_outputs ).split( "," )
+library(Seurat)
+#set $___USE_COMMA___ = ""
+rval <- CreateSeuratObject(
+#if str( $raw_data_type.raw_data_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $raw_data_type.raw_data_type.raw_data_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $raw_data_type.raw_data_type.raw_data_type_selector ) == 'dataset':
+                                                                 raw.data = readRDS("${raw_data_type.raw_data_type.raw_data}")
+                                                             #elif str( $raw_data_type.raw_data_type.raw_data_type_selector ) == 'text':
+                                                                 raw.data = "${ raw_data_type.raw_data_type.raw_data }"
+                                                             #elif str( $raw_data_type.raw_data_type.raw_data_type_selector ) == 'integer':
+                                                                 raw.data = ${ raw_data_type.raw_data_type.raw_data }
+                                                             #elif str( $raw_data_type.raw_data_type.raw_data_type_selector ) == 'float':
+                                                                 raw.data = ${ raw_data_type.raw_data_type.raw_data }
+                                                             #elif str( $raw_data_type.raw_data_type.raw_data_type_selector ) == 'boolean':
+                                                                 raw.data = ${ raw_data_type.raw_data_type.raw_data }
+                                                             #elif str( $raw_data_type.raw_data_type.raw_data_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 raw.data = "${ raw_data_type.raw_data_type.raw_data }"
+                                                             #elif str( $raw_data_type.raw_data_type.raw_data_type_selector ) == 'NULL':
+                                                                 raw.data = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $project_type.project_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $project_type.project_type.project_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $project_type.project_type.project_type_selector ) == 'dataset':
+                                                                 project = readRDS("${project_type.project_type.project}")
+                                                             #elif str( $project_type.project_type.project_type_selector ) == 'text':
+                                                                 project = "${ project_type.project_type.project }"
+                                                             #elif str( $project_type.project_type.project_type_selector ) == 'integer':
+                                                                 project = ${ project_type.project_type.project }
+                                                             #elif str( $project_type.project_type.project_type_selector ) == 'float':
+                                                                 project = ${ project_type.project_type.project }
+                                                             #elif str( $project_type.project_type.project_type_selector ) == 'boolean':
+                                                                 project = ${ project_type.project_type.project }
+                                                             #elif str( $project_type.project_type.project_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 project = "${ project_type.project_type.project }"
+                                                             #elif str( $project_type.project_type.project_type_selector ) == 'NULL':
+                                                                 project = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $min_cells_type.min_cells_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $min_cells_type.min_cells_type.min_cells_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $min_cells_type.min_cells_type.min_cells_type_selector ) == 'dataset':
+                                                                 min.cells = readRDS("${min_cells_type.min_cells_type.min_cells}")
+                                                             #elif str( $min_cells_type.min_cells_type.min_cells_type_selector ) == 'text':
+                                                                 min.cells = "${ min_cells_type.min_cells_type.min_cells }"
+                                                             #elif str( $min_cells_type.min_cells_type.min_cells_type_selector ) == 'integer':
+                                                                 min.cells = ${ min_cells_type.min_cells_type.min_cells }
+                                                             #elif str( $min_cells_type.min_cells_type.min_cells_type_selector ) == 'float':
+                                                                 min.cells = ${ min_cells_type.min_cells_type.min_cells }
+                                                             #elif str( $min_cells_type.min_cells_type.min_cells_type_selector ) == 'boolean':
+                                                                 min.cells = ${ min_cells_type.min_cells_type.min_cells }
+                                                             #elif str( $min_cells_type.min_cells_type.min_cells_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 min.cells = "${ min_cells_type.min_cells_type.min_cells }"
+                                                             #elif str( $min_cells_type.min_cells_type.min_cells_type_selector ) == 'NULL':
+                                                                 min.cells = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $min_genes_type.min_genes_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $min_genes_type.min_genes_type.min_genes_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $min_genes_type.min_genes_type.min_genes_type_selector ) == 'dataset':
+                                                                 min.genes = readRDS("${min_genes_type.min_genes_type.min_genes}")
+                                                             #elif str( $min_genes_type.min_genes_type.min_genes_type_selector ) == 'text':
+                                                                 min.genes = "${ min_genes_type.min_genes_type.min_genes }"
+                                                             #elif str( $min_genes_type.min_genes_type.min_genes_type_selector ) == 'integer':
+                                                                 min.genes = ${ min_genes_type.min_genes_type.min_genes }
+                                                             #elif str( $min_genes_type.min_genes_type.min_genes_type_selector ) == 'float':
+                                                                 min.genes = ${ min_genes_type.min_genes_type.min_genes }
+                                                             #elif str( $min_genes_type.min_genes_type.min_genes_type_selector ) == 'boolean':
+                                                                 min.genes = ${ min_genes_type.min_genes_type.min_genes }
+                                                             #elif str( $min_genes_type.min_genes_type.min_genes_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 min.genes = "${ min_genes_type.min_genes_type.min_genes }"
+                                                             #elif str( $min_genes_type.min_genes_type.min_genes_type_selector ) == 'NULL':
+                                                                 min.genes = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $is_expr_type.is_expr_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $is_expr_type.is_expr_type.is_expr_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $is_expr_type.is_expr_type.is_expr_type_selector ) == 'dataset':
+                                                                 is.expr = readRDS("${is_expr_type.is_expr_type.is_expr}")
+                                                             #elif str( $is_expr_type.is_expr_type.is_expr_type_selector ) == 'text':
+                                                                 is.expr = "${ is_expr_type.is_expr_type.is_expr }"
+                                                             #elif str( $is_expr_type.is_expr_type.is_expr_type_selector ) == 'integer':
+                                                                 is.expr = ${ is_expr_type.is_expr_type.is_expr }
+                                                             #elif str( $is_expr_type.is_expr_type.is_expr_type_selector ) == 'float':
+                                                                 is.expr = ${ is_expr_type.is_expr_type.is_expr }
+                                                             #elif str( $is_expr_type.is_expr_type.is_expr_type_selector ) == 'boolean':
+                                                                 is.expr = ${ is_expr_type.is_expr_type.is_expr }
+                                                             #elif str( $is_expr_type.is_expr_type.is_expr_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 is.expr = "${ is_expr_type.is_expr_type.is_expr }"
+                                                             #elif str( $is_expr_type.is_expr_type.is_expr_type_selector ) == 'NULL':
+                                                                 is.expr = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $normalization_method_type.normalization_method_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $normalization_method_type.normalization_method_type.normalization_method_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $normalization_method_type.normalization_method_type.normalization_method_type_selector ) == 'dataset':
+                                                                 normalization.method = readRDS("${normalization_method_type.normalization_method_type.normalization_method}")
+                                                             #elif str( $normalization_method_type.normalization_method_type.normalization_method_type_selector ) == 'text':
+                                                                 normalization.method = "${ normalization_method_type.normalization_method_type.normalization_method }"
+                                                             #elif str( $normalization_method_type.normalization_method_type.normalization_method_type_selector ) == 'integer':
+                                                                 normalization.method = ${ normalization_method_type.normalization_method_type.normalization_method }
+                                                             #elif str( $normalization_method_type.normalization_method_type.normalization_method_type_selector ) == 'float':
+                                                                 normalization.method = ${ normalization_method_type.normalization_method_type.normalization_method }
+                                                             #elif str( $normalization_method_type.normalization_method_type.normalization_method_type_selector ) == 'boolean':
+                                                                 normalization.method = ${ normalization_method_type.normalization_method_type.normalization_method }
+                                                             #elif str( $normalization_method_type.normalization_method_type.normalization_method_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 normalization.method = "${ normalization_method_type.normalization_method_type.normalization_method }"
+                                                             #elif str( $normalization_method_type.normalization_method_type.normalization_method_type_selector ) == 'NULL':
+                                                                 normalization.method = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $scale_factor_type.scale_factor_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $scale_factor_type.scale_factor_type.scale_factor_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $scale_factor_type.scale_factor_type.scale_factor_type_selector ) == 'dataset':
+                                                                 scale.factor = readRDS("${scale_factor_type.scale_factor_type.scale_factor}")
+                                                             #elif str( $scale_factor_type.scale_factor_type.scale_factor_type_selector ) == 'text':
+                                                                 scale.factor = "${ scale_factor_type.scale_factor_type.scale_factor }"
+                                                             #elif str( $scale_factor_type.scale_factor_type.scale_factor_type_selector ) == 'integer':
+                                                                 scale.factor = ${ scale_factor_type.scale_factor_type.scale_factor }
+                                                             #elif str( $scale_factor_type.scale_factor_type.scale_factor_type_selector ) == 'float':
+                                                                 scale.factor = ${ scale_factor_type.scale_factor_type.scale_factor }
+                                                             #elif str( $scale_factor_type.scale_factor_type.scale_factor_type_selector ) == 'boolean':
+                                                                 scale.factor = ${ scale_factor_type.scale_factor_type.scale_factor }
+                                                             #elif str( $scale_factor_type.scale_factor_type.scale_factor_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 scale.factor = "${ scale_factor_type.scale_factor_type.scale_factor }"
+                                                             #elif str( $scale_factor_type.scale_factor_type.scale_factor_type_selector ) == 'NULL':
+                                                                 scale.factor = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $do_scale_type.do_scale_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $do_scale_type.do_scale_type.do_scale_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $do_scale_type.do_scale_type.do_scale_type_selector ) == 'dataset':
+                                                                 do.scale = readRDS("${do_scale_type.do_scale_type.do_scale}")
+                                                             #elif str( $do_scale_type.do_scale_type.do_scale_type_selector ) == 'text':
+                                                                 do.scale = "${ do_scale_type.do_scale_type.do_scale }"
+                                                             #elif str( $do_scale_type.do_scale_type.do_scale_type_selector ) == 'integer':
+                                                                 do.scale = ${ do_scale_type.do_scale_type.do_scale }
+                                                             #elif str( $do_scale_type.do_scale_type.do_scale_type_selector ) == 'float':
+                                                                 do.scale = ${ do_scale_type.do_scale_type.do_scale }
+                                                             #elif str( $do_scale_type.do_scale_type.do_scale_type_selector ) == 'boolean':
+                                                                 do.scale = ${ do_scale_type.do_scale_type.do_scale }
+                                                             #elif str( $do_scale_type.do_scale_type.do_scale_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 do.scale = "${ do_scale_type.do_scale_type.do_scale }"
+                                                             #elif str( $do_scale_type.do_scale_type.do_scale_type_selector ) == 'NULL':
+                                                                 do.scale = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $do_center_type.do_center_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $do_center_type.do_center_type.do_center_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $do_center_type.do_center_type.do_center_type_selector ) == 'dataset':
+                                                                 do.center = readRDS("${do_center_type.do_center_type.do_center}")
+                                                             #elif str( $do_center_type.do_center_type.do_center_type_selector ) == 'text':
+                                                                 do.center = "${ do_center_type.do_center_type.do_center }"
+                                                             #elif str( $do_center_type.do_center_type.do_center_type_selector ) == 'integer':
+                                                                 do.center = ${ do_center_type.do_center_type.do_center }
+                                                             #elif str( $do_center_type.do_center_type.do_center_type_selector ) == 'float':
+                                                                 do.center = ${ do_center_type.do_center_type.do_center }
+                                                             #elif str( $do_center_type.do_center_type.do_center_type_selector ) == 'boolean':
+                                                                 do.center = ${ do_center_type.do_center_type.do_center }
+                                                             #elif str( $do_center_type.do_center_type.do_center_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 do.center = "${ do_center_type.do_center_type.do_center }"
+                                                             #elif str( $do_center_type.do_center_type.do_center_type_selector ) == 'NULL':
+                                                                 do.center = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $names_field_type.names_field_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $names_field_type.names_field_type.names_field_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $names_field_type.names_field_type.names_field_type_selector ) == 'dataset':
+                                                                 names.field = readRDS("${names_field_type.names_field_type.names_field}")
+                                                             #elif str( $names_field_type.names_field_type.names_field_type_selector ) == 'text':
+                                                                 names.field = "${ names_field_type.names_field_type.names_field }"
+                                                             #elif str( $names_field_type.names_field_type.names_field_type_selector ) == 'integer':
+                                                                 names.field = ${ names_field_type.names_field_type.names_field }
+                                                             #elif str( $names_field_type.names_field_type.names_field_type_selector ) == 'float':
+                                                                 names.field = ${ names_field_type.names_field_type.names_field }
+                                                             #elif str( $names_field_type.names_field_type.names_field_type_selector ) == 'boolean':
+                                                                 names.field = ${ names_field_type.names_field_type.names_field }
+                                                             #elif str( $names_field_type.names_field_type.names_field_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 names.field = "${ names_field_type.names_field_type.names_field }"
+                                                             #elif str( $names_field_type.names_field_type.names_field_type_selector ) == 'NULL':
+                                                                 names.field = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $names_delim_type.names_delim_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $names_delim_type.names_delim_type.names_delim_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $names_delim_type.names_delim_type.names_delim_type_selector ) == 'dataset':
+                                                                 names.delim = readRDS("${names_delim_type.names_delim_type.names_delim}")
+                                                             #elif str( $names_delim_type.names_delim_type.names_delim_type_selector ) == 'text':
+                                                                 names.delim = "${ names_delim_type.names_delim_type.names_delim }"
+                                                             #elif str( $names_delim_type.names_delim_type.names_delim_type_selector ) == 'integer':
+                                                                 names.delim = ${ names_delim_type.names_delim_type.names_delim }
+                                                             #elif str( $names_delim_type.names_delim_type.names_delim_type_selector ) == 'float':
+                                                                 names.delim = ${ names_delim_type.names_delim_type.names_delim }
+                                                             #elif str( $names_delim_type.names_delim_type.names_delim_type_selector ) == 'boolean':
+                                                                 names.delim = ${ names_delim_type.names_delim_type.names_delim }
+                                                             #elif str( $names_delim_type.names_delim_type.names_delim_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 names.delim = "${ names_delim_type.names_delim_type.names_delim }"
+                                                             #elif str( $names_delim_type.names_delim_type.names_delim_type_selector ) == 'NULL':
+                                                                 names.delim = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $meta_data_type.meta_data_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $meta_data_type.meta_data_type.meta_data_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $meta_data_type.meta_data_type.meta_data_type_selector ) == 'dataset':
+                                                                 meta.data = readRDS("${meta_data_type.meta_data_type.meta_data}")
+                                                             #elif str( $meta_data_type.meta_data_type.meta_data_type_selector ) == 'text':
+                                                                 meta.data = "${ meta_data_type.meta_data_type.meta_data }"
+                                                             #elif str( $meta_data_type.meta_data_type.meta_data_type_selector ) == 'integer':
+                                                                 meta.data = ${ meta_data_type.meta_data_type.meta_data }
+                                                             #elif str( $meta_data_type.meta_data_type.meta_data_type_selector ) == 'float':
+                                                                 meta.data = ${ meta_data_type.meta_data_type.meta_data }
+                                                             #elif str( $meta_data_type.meta_data_type.meta_data_type_selector ) == 'boolean':
+                                                                 meta.data = ${ meta_data_type.meta_data_type.meta_data }
+                                                             #elif str( $meta_data_type.meta_data_type.meta_data_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 meta.data = "${ meta_data_type.meta_data_type.meta_data }"
+                                                             #elif str( $meta_data_type.meta_data_type.meta_data_type_selector ) == 'NULL':
+                                                                 meta.data = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $display_progress_type.display_progress_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $display_progress_type.display_progress_type.display_progress_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $display_progress_type.display_progress_type.display_progress_type_selector ) == 'dataset':
+                                                                 display.progress = readRDS("${display_progress_type.display_progress_type.display_progress}")
+                                                             #elif str( $display_progress_type.display_progress_type.display_progress_type_selector ) == 'text':
+                                                                 display.progress = "${ display_progress_type.display_progress_type.display_progress }"
+                                                             #elif str( $display_progress_type.display_progress_type.display_progress_type_selector ) == 'integer':
+                                                                 display.progress = ${ display_progress_type.display_progress_type.display_progress }
+                                                             #elif str( $display_progress_type.display_progress_type.display_progress_type_selector ) == 'float':
+                                                                 display.progress = ${ display_progress_type.display_progress_type.display_progress }
+                                                             #elif str( $display_progress_type.display_progress_type.display_progress_type_selector ) == 'boolean':
+                                                                 display.progress = ${ display_progress_type.display_progress_type.display_progress }
+                                                             #elif str( $display_progress_type.display_progress_type.display_progress_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 display.progress = "${ display_progress_type.display_progress_type.display_progress }"
+                                                             #elif str( $display_progress_type.display_progress_type.display_progress_type_selector ) == 'NULL':
+                                                                 display.progress = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+${___USE_COMMA___}
+                                                #set $___USE_COMMA___ = ","
+                                                #for eli in $___ellipsis___:
+                                                    #if str( $eli.argument_type.argument_type_selector ) != 'skip':
+                                                         #set $___USE_COMMA___ = ","
+
+                                                         #if str( $eli.argument_type.argument_type_selector ) == 'dataset':
+                                                             ${eli.argument_name} = readRDS("${eli.argument_type.argument}")
+                                                         #elif str( $eli.argument_type.argument_type_selector ) == 'text':
+                                                             ${eli.argument_name} = "${eli.argument_type.argument}"
+                                                         #elif str( $eli.argument_type.argument_type_selector ) == 'integer':
+                                                             ${eli.argument_name} = ${eli.argument_type.argument}
+                                                         #elif str( $eli.argument_type.argument_type_selector ) == 'float':
+                                                             ${eli.argument_name} = ${eli.argument_type.argument}
+                                                         #elif str( $eli.argument_type.argument_type_selector ) == 'boolean':
+                                                             ${eli.argument_name} = ${eli.argument_type.argument}
+                                                         #elif str( $eli.argument_type.argument_type_selector ) == 'select':
+                                                             #raise ValueError( 'not implemented' )
+                                                             ${eli.argument_name} = "${eli.argument_type.argument}"
+                                                         #elif str( $eli.argument_type.argument_type_selector ) == 'NULL':
+                                                             ${eli.argument_name} = NULL
+                                                         #end if
+                                                     #end if
+                                                #end for
+                                                
+)
+#if "output_r_dataset" in $include_files:
+    saveRDS(rval, file = "${output_r_dataset}", ascii = FALSE, version = 2, compress = TRUE )
+#end if
+
+    ]]>
+         </configfile>
+    </configfiles>
+    <inputs>
+        
+        <conditional name="raw_data_type">
+            <param name="raw_data_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="raw_data: Provide value"/>
+            <when value="True">
+                
+        <conditional name="raw_data_type">
+            <param name="raw_data_type_selector" type="select" label="raw_data: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="raw_data" type="data" format="rds" label="raw.data" help="$raw.data"/>
+            </when>
+            <when value="text">
+                <param name="raw_data" type="text" value="" label="raw.data" help="$raw.data"/>
+            </when>
+            <when value="integer">
+                <param name="raw_data" type="integer" value="" label="raw.data" help="$raw.data"/>
+            </when>
+            <when value="float">
+                <param name="raw_data" type="float" value="" label="raw.data" help="$raw.data"/>
+            </when>
+            <when value="boolean">
+                <param name="raw_data" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="raw.data" help="$raw.data"/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="project_type">
+            <param name="project_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="project: Provide value"/>
+            <when value="True">
+                <param name="project" type="text" value="SeuratProject" label="project" help='$project&#10;[1] "SeuratProject"'/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="min_cells_type">
+            <param name="min_cells_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="min_cells: Provide value"/>
+            <when value="True">
+                <param name="min_cells" type="float" value="0.0" label="min.cells" help="$min.cells&#10;[1] 0"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="min_genes_type">
+            <param name="min_genes_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="min_genes: Provide value"/>
+            <when value="True">
+                <param name="min_genes" type="float" value="0.0" label="min.genes" help="$min.genes&#10;[1] 0"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="is_expr_type">
+            <param name="is_expr_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="is_expr: Provide value"/>
+            <when value="True">
+                <param name="is_expr" type="float" value="0.0" label="is.expr" help="$is.expr&#10;[1] 0"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="normalization_method_type">
+            <param name="normalization_method_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="normalization_method: Provide value"/>
+            <when value="True">
+                
+        <conditional name="normalization_method_type">
+            <param name="normalization_method_type_selector" type="select" label="normalization_method: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="normalization_method" type="data" format="rds" label="normalization.method" help="$normalization.method&#10;NULL"/>
+            </when>
+            <when value="text">
+                <param name="normalization_method" type="text" value="" label="normalization.method" help="$normalization.method&#10;NULL"/>
+            </when>
+            <when value="integer">
+                <param name="normalization_method" type="integer" value="" label="normalization.method" help="$normalization.method&#10;NULL"/>
+            </when>
+            <when value="float">
+                <param name="normalization_method" type="float" value="" label="normalization.method" help="$normalization.method&#10;NULL"/>
+            </when>
+            <when value="boolean">
+                <param name="normalization_method" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="normalization.method" help="$normalization.method&#10;NULL"/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="scale_factor_type">
+            <param name="scale_factor_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="scale_factor: Provide value"/>
+            <when value="True">
+                <param name="scale_factor" type="float" value="10000.0" label="scale.factor" help="$scale.factor&#10;[1] 10000"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="do_scale_type">
+            <param name="do_scale_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="do_scale: Provide value"/>
+            <when value="True">
+                <param name="do_scale" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="False" label="do.scale" help="$do.scale&#10;[1] FALSE"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="do_center_type">
+            <param name="do_center_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="do_center: Provide value"/>
+            <when value="True">
+                <param name="do_center" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="False" label="do.center" help="$do.center&#10;[1] FALSE"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="names_field_type">
+            <param name="names_field_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="names_field: Provide value"/>
+            <when value="True">
+                <param name="names_field" type="float" value="1.0" label="names.field" help="$names.field&#10;[1] 1"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="names_delim_type">
+            <param name="names_delim_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="names_delim: Provide value"/>
+            <when value="True">
+                <param name="names_delim" type="text" value="_" label="names.delim" help='$names.delim&#10;[1] "_"'/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="meta_data_type">
+            <param name="meta_data_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="meta_data: Provide value"/>
+            <when value="True">
+                
+        <conditional name="meta_data_type">
+            <param name="meta_data_type_selector" type="select" label="meta_data: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="meta_data" type="data" format="rds" label="meta.data" help="$meta.data&#10;NULL"/>
+            </when>
+            <when value="text">
+                <param name="meta_data" type="text" value="" label="meta.data" help="$meta.data&#10;NULL"/>
+            </when>
+            <when value="integer">
+                <param name="meta_data" type="integer" value="" label="meta.data" help="$meta.data&#10;NULL"/>
+            </when>
+            <when value="float">
+                <param name="meta_data" type="float" value="" label="meta.data" help="$meta.data&#10;NULL"/>
+            </when>
+            <when value="boolean">
+                <param name="meta_data" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="meta.data" help="$meta.data&#10;NULL"/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="display_progress_type">
+            <param name="display_progress_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="display_progress: Provide value"/>
+            <when value="True">
+                <param name="display_progress" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="True" label="display.progress" help="$display.progress&#10;[1] TRUE"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <repeat name="___ellipsis___" title="Additional argument">
+            <param name="argument_name" type="text" value="" label="Name for argument" help=""/>
+            
+        <conditional name="argument_type">
+            <param name="argument_type_selector" type="select" label="argument: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="argument" type="data" format="rds" label="Argument value" help=""/>
+            </when>
+            <when value="text">
+                <param name="argument" type="text" value="" label="Argument value" help=""/>
+            </when>
+            <when value="integer">
+                <param name="argument" type="integer" value="" label="Argument value" help=""/>
+            </when>
+            <when value="float">
+                <param name="argument" type="float" value="" label="Argument value" help=""/>
+            </when>
+            <when value="boolean">
+                <param name="argument" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="Argument value" help=""/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        </repeat>
+
+        <param name="include_outputs" type="select" multiple="True" label="Datasets to create">
+            <option value="output_r_dataset" selected="true">Results in RDS format</option>
+            <option value="output_r_script" selected="false">R script</option>
+        </param>
+    </inputs>
+    <outputs>
+        <data format="rds" name="output_r_dataset" label="${tool.name} on ${on_string} (RDS)">
+            <filter>"output_r_dataset" in include_outputs</filter>
+        </data>
+        <data format="txt" name="output_r_script" label="${tool.name} on ${on_string} (Rscript)">
+            <filter>"output_r_script" in include_outputs</filter>
+        </data>
+    </outputs>
+    <help><![CDATA[
+Automatically Parsed R Help
+===========================
+
+Title
+-----
+
+::
+  
+  Initialize and setup the Seurat object 
+
+Name
+----
+
+::
+  
+  CreateSeuratObject 
+
+Alias
+-----
+
+::
+  
+  CreateSeuratObject 
+
+Description
+-----------
+
+::
+  
+  
+   Initializes the Seurat object and some optional filtering
+   
+
+Usage
+-----
+
+::
+  
+  
+   CreateSeuratObject(raw.data, project = "SeuratProject", min.cells = 0,
+     min.genes = 0, is.expr = 0, normalization.method = NULL,
+     scale.factor = 10000, do.scale = FALSE, do.center = FALSE,
+     names.field = 1, names.delim = "_", meta.data = NULL,
+     display.progress = TRUE, ...)
+   
+
+Arguments
+---------
+
+::
+  
+  
+   raw.data Raw input data 
+   
+   project Project name (string) 
+   
+   min.cells Include genes with detected expression in at least this
+   many cells. Will subset the raw.data matrix as well. To reintroduce excluded
+   genes, create a new object with a lower cutoff. 
+   
+   min.genes Include cells where at least this many genes are detected. 
+   
+   is.expr Expression threshold for 'detected' gene. For most datasets, particularly UMI
+   datasets, will be set to 0 (default). If not, when initializing, this should be set to a level
+   based on pre-normalized counts (i.e. require at least 5 counts to be treated as expresesd) All
+   values less than this will be set to 0 (though maintained in object@raw.data). 
+   
+   normalization.method Method for cell normalization. Default is no normalization.
+   In this case, run NormalizeData later in the workflow. As a shortcut, you can specify a
+   normalization method (i.e. LogNormalize) here directly. 
+   
+   scale.factor If normalizing on the cell level, this sets the scale factor. 
+   
+   do.scale In object@scale.data, perform row-scaling (gene-based
+   z-score). FALSE by default. In this case, run ScaleData later in the workflow. As a shortcut, you
+   can specify do.scale = TRUE (and do.center = TRUE) here. 
+   
+   do.center In object@scale.data, perform row-centering (gene-based centering) 
+   
+   names.field For the initial identity class for each cell, choose this field from the
+   cell's column name 
+   
+   names.delim For the initial identity class for each cell, choose this delimiter from the
+   cell's column name 
+   
+   meta.data Additional metadata to add to the Seurat object. Should be a data frame where
+   the rows are cell names, and the columns are additional metadata fields 
+   
+   display.progress display progress bar for normalization and/or scaling procedure. 
+   
+   ... Ignored 
+   
+
+Value
+-----
+
+::
+  
+  
+   Returns a Seurat object with the raw data stored in object@raw.data.
+   object@data, object@meta.data, object@ident, also initialized.
+   
+
+Examples
+--------
+
+::
+  
+  
+   pbmc_raw <- read.table(
+     file = system.file('extdata', 'pbmc_raw.txt', package = 'Seurat'),
+     as.is = TRUE
+   )
+   pbmc_small <- CreateSeuratObject(raw.data = pbmc_raw)
+   pbmc_small
+    ]]></help>
+<tests>
+    <test>
+    </test>
+</tests>
+<citations>
+</citations>
+</tool>
+<!-- Created automatically using R2-G2: https://github.com/blankenberg/r2g2 -->

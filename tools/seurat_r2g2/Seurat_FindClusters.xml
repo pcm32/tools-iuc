@@ -1,0 +1,1218 @@
+<tool id="Seurat_FindClusters" name="FindClusters" version="@VERSION@-0.0.1">
+    <description><![CDATA[Cluster Determination]]></description>
+    <macros>
+        <import>Seurat_macros.xml</import>
+    </macros>
+    <expand macro="requirements" />
+    <expand macro="stdio" />
+    <expand macro="version_command" />
+    <command><![CDATA[
+        #if "output_r_script" in str( $include_outputs ).split( "," ):
+            cp '${Seurat_FindClusters_script}' '${output_r_script}' &&
+        #end if
+        Rscript '${Seurat_FindClusters_script}'
+    ]]>
+    </command>
+    <configfiles>
+         <configfile name="Seurat_FindClusters_script"><![CDATA[#!/usr/bin/env RScript
+#set $include_files = str( $include_outputs ).split( "," )
+library(Seurat)
+#set $___USE_COMMA___ = ""
+rval <- FindClusters(
+#if str( $object_type.object_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $object_type.object_type.object_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $object_type.object_type.object_type_selector ) == 'dataset':
+                                                                 object = readRDS("${object_type.object_type.object}")
+                                                             #elif str( $object_type.object_type.object_type_selector ) == 'text':
+                                                                 object = "${ object_type.object_type.object }"
+                                                             #elif str( $object_type.object_type.object_type_selector ) == 'integer':
+                                                                 object = ${ object_type.object_type.object }
+                                                             #elif str( $object_type.object_type.object_type_selector ) == 'float':
+                                                                 object = ${ object_type.object_type.object }
+                                                             #elif str( $object_type.object_type.object_type_selector ) == 'boolean':
+                                                                 object = ${ object_type.object_type.object }
+                                                             #elif str( $object_type.object_type.object_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 object = "${ object_type.object_type.object }"
+                                                             #elif str( $object_type.object_type.object_type_selector ) == 'NULL':
+                                                                 object = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $genes_use_type.genes_use_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $genes_use_type.genes_use_type.genes_use_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $genes_use_type.genes_use_type.genes_use_type_selector ) == 'dataset':
+                                                                 genes.use = readRDS("${genes_use_type.genes_use_type.genes_use}")
+                                                             #elif str( $genes_use_type.genes_use_type.genes_use_type_selector ) == 'text':
+                                                                 genes.use = "${ genes_use_type.genes_use_type.genes_use }"
+                                                             #elif str( $genes_use_type.genes_use_type.genes_use_type_selector ) == 'integer':
+                                                                 genes.use = ${ genes_use_type.genes_use_type.genes_use }
+                                                             #elif str( $genes_use_type.genes_use_type.genes_use_type_selector ) == 'float':
+                                                                 genes.use = ${ genes_use_type.genes_use_type.genes_use }
+                                                             #elif str( $genes_use_type.genes_use_type.genes_use_type_selector ) == 'boolean':
+                                                                 genes.use = ${ genes_use_type.genes_use_type.genes_use }
+                                                             #elif str( $genes_use_type.genes_use_type.genes_use_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 genes.use = "${ genes_use_type.genes_use_type.genes_use }"
+                                                             #elif str( $genes_use_type.genes_use_type.genes_use_type_selector ) == 'NULL':
+                                                                 genes.use = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $reduction_type_type.reduction_type_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $reduction_type_type.reduction_type_type.reduction_type_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $reduction_type_type.reduction_type_type.reduction_type_type_selector ) == 'dataset':
+                                                                 reduction.type = readRDS("${reduction_type_type.reduction_type_type.reduction_type}")
+                                                             #elif str( $reduction_type_type.reduction_type_type.reduction_type_type_selector ) == 'text':
+                                                                 reduction.type = "${ reduction_type_type.reduction_type_type.reduction_type }"
+                                                             #elif str( $reduction_type_type.reduction_type_type.reduction_type_type_selector ) == 'integer':
+                                                                 reduction.type = ${ reduction_type_type.reduction_type_type.reduction_type }
+                                                             #elif str( $reduction_type_type.reduction_type_type.reduction_type_type_selector ) == 'float':
+                                                                 reduction.type = ${ reduction_type_type.reduction_type_type.reduction_type }
+                                                             #elif str( $reduction_type_type.reduction_type_type.reduction_type_type_selector ) == 'boolean':
+                                                                 reduction.type = ${ reduction_type_type.reduction_type_type.reduction_type }
+                                                             #elif str( $reduction_type_type.reduction_type_type.reduction_type_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 reduction.type = "${ reduction_type_type.reduction_type_type.reduction_type }"
+                                                             #elif str( $reduction_type_type.reduction_type_type.reduction_type_type_selector ) == 'NULL':
+                                                                 reduction.type = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $dims_use_type.dims_use_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $dims_use_type.dims_use_type.dims_use_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $dims_use_type.dims_use_type.dims_use_type_selector ) == 'dataset':
+                                                                 dims.use = readRDS("${dims_use_type.dims_use_type.dims_use}")
+                                                             #elif str( $dims_use_type.dims_use_type.dims_use_type_selector ) == 'text':
+                                                                 dims.use = "${ dims_use_type.dims_use_type.dims_use }"
+                                                             #elif str( $dims_use_type.dims_use_type.dims_use_type_selector ) == 'integer':
+                                                                 dims.use = ${ dims_use_type.dims_use_type.dims_use }
+                                                             #elif str( $dims_use_type.dims_use_type.dims_use_type_selector ) == 'float':
+                                                                 dims.use = ${ dims_use_type.dims_use_type.dims_use }
+                                                             #elif str( $dims_use_type.dims_use_type.dims_use_type_selector ) == 'boolean':
+                                                                 dims.use = ${ dims_use_type.dims_use_type.dims_use }
+                                                             #elif str( $dims_use_type.dims_use_type.dims_use_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 dims.use = "${ dims_use_type.dims_use_type.dims_use }"
+                                                             #elif str( $dims_use_type.dims_use_type.dims_use_type_selector ) == 'NULL':
+                                                                 dims.use = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $k_param_type.k_param_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $k_param_type.k_param_type.k_param_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $k_param_type.k_param_type.k_param_type_selector ) == 'dataset':
+                                                                 k.param = readRDS("${k_param_type.k_param_type.k_param}")
+                                                             #elif str( $k_param_type.k_param_type.k_param_type_selector ) == 'text':
+                                                                 k.param = "${ k_param_type.k_param_type.k_param }"
+                                                             #elif str( $k_param_type.k_param_type.k_param_type_selector ) == 'integer':
+                                                                 k.param = ${ k_param_type.k_param_type.k_param }
+                                                             #elif str( $k_param_type.k_param_type.k_param_type_selector ) == 'float':
+                                                                 k.param = ${ k_param_type.k_param_type.k_param }
+                                                             #elif str( $k_param_type.k_param_type.k_param_type_selector ) == 'boolean':
+                                                                 k.param = ${ k_param_type.k_param_type.k_param }
+                                                             #elif str( $k_param_type.k_param_type.k_param_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 k.param = "${ k_param_type.k_param_type.k_param }"
+                                                             #elif str( $k_param_type.k_param_type.k_param_type_selector ) == 'NULL':
+                                                                 k.param = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $plot_SNN_type.plot_SNN_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $plot_SNN_type.plot_SNN_type.plot_SNN_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $plot_SNN_type.plot_SNN_type.plot_SNN_type_selector ) == 'dataset':
+                                                                 plot.SNN = readRDS("${plot_SNN_type.plot_SNN_type.plot_SNN}")
+                                                             #elif str( $plot_SNN_type.plot_SNN_type.plot_SNN_type_selector ) == 'text':
+                                                                 plot.SNN = "${ plot_SNN_type.plot_SNN_type.plot_SNN }"
+                                                             #elif str( $plot_SNN_type.plot_SNN_type.plot_SNN_type_selector ) == 'integer':
+                                                                 plot.SNN = ${ plot_SNN_type.plot_SNN_type.plot_SNN }
+                                                             #elif str( $plot_SNN_type.plot_SNN_type.plot_SNN_type_selector ) == 'float':
+                                                                 plot.SNN = ${ plot_SNN_type.plot_SNN_type.plot_SNN }
+                                                             #elif str( $plot_SNN_type.plot_SNN_type.plot_SNN_type_selector ) == 'boolean':
+                                                                 plot.SNN = ${ plot_SNN_type.plot_SNN_type.plot_SNN }
+                                                             #elif str( $plot_SNN_type.plot_SNN_type.plot_SNN_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 plot.SNN = "${ plot_SNN_type.plot_SNN_type.plot_SNN }"
+                                                             #elif str( $plot_SNN_type.plot_SNN_type.plot_SNN_type_selector ) == 'NULL':
+                                                                 plot.SNN = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $prune_SNN_type.prune_SNN_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $prune_SNN_type.prune_SNN_type.prune_SNN_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $prune_SNN_type.prune_SNN_type.prune_SNN_type_selector ) == 'dataset':
+                                                                 prune.SNN = readRDS("${prune_SNN_type.prune_SNN_type.prune_SNN}")
+                                                             #elif str( $prune_SNN_type.prune_SNN_type.prune_SNN_type_selector ) == 'text':
+                                                                 prune.SNN = "${ prune_SNN_type.prune_SNN_type.prune_SNN }"
+                                                             #elif str( $prune_SNN_type.prune_SNN_type.prune_SNN_type_selector ) == 'integer':
+                                                                 prune.SNN = ${ prune_SNN_type.prune_SNN_type.prune_SNN }
+                                                             #elif str( $prune_SNN_type.prune_SNN_type.prune_SNN_type_selector ) == 'float':
+                                                                 prune.SNN = ${ prune_SNN_type.prune_SNN_type.prune_SNN }
+                                                             #elif str( $prune_SNN_type.prune_SNN_type.prune_SNN_type_selector ) == 'boolean':
+                                                                 prune.SNN = ${ prune_SNN_type.prune_SNN_type.prune_SNN }
+                                                             #elif str( $prune_SNN_type.prune_SNN_type.prune_SNN_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 prune.SNN = "${ prune_SNN_type.prune_SNN_type.prune_SNN }"
+                                                             #elif str( $prune_SNN_type.prune_SNN_type.prune_SNN_type_selector ) == 'NULL':
+                                                                 prune.SNN = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $print_output_type.print_output_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $print_output_type.print_output_type.print_output_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $print_output_type.print_output_type.print_output_type_selector ) == 'dataset':
+                                                                 print.output = readRDS("${print_output_type.print_output_type.print_output}")
+                                                             #elif str( $print_output_type.print_output_type.print_output_type_selector ) == 'text':
+                                                                 print.output = "${ print_output_type.print_output_type.print_output }"
+                                                             #elif str( $print_output_type.print_output_type.print_output_type_selector ) == 'integer':
+                                                                 print.output = ${ print_output_type.print_output_type.print_output }
+                                                             #elif str( $print_output_type.print_output_type.print_output_type_selector ) == 'float':
+                                                                 print.output = ${ print_output_type.print_output_type.print_output }
+                                                             #elif str( $print_output_type.print_output_type.print_output_type_selector ) == 'boolean':
+                                                                 print.output = ${ print_output_type.print_output_type.print_output }
+                                                             #elif str( $print_output_type.print_output_type.print_output_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 print.output = "${ print_output_type.print_output_type.print_output }"
+                                                             #elif str( $print_output_type.print_output_type.print_output_type_selector ) == 'NULL':
+                                                                 print.output = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $distance_matrix_type.distance_matrix_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $distance_matrix_type.distance_matrix_type.distance_matrix_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $distance_matrix_type.distance_matrix_type.distance_matrix_type_selector ) == 'dataset':
+                                                                 distance.matrix = readRDS("${distance_matrix_type.distance_matrix_type.distance_matrix}")
+                                                             #elif str( $distance_matrix_type.distance_matrix_type.distance_matrix_type_selector ) == 'text':
+                                                                 distance.matrix = "${ distance_matrix_type.distance_matrix_type.distance_matrix }"
+                                                             #elif str( $distance_matrix_type.distance_matrix_type.distance_matrix_type_selector ) == 'integer':
+                                                                 distance.matrix = ${ distance_matrix_type.distance_matrix_type.distance_matrix }
+                                                             #elif str( $distance_matrix_type.distance_matrix_type.distance_matrix_type_selector ) == 'float':
+                                                                 distance.matrix = ${ distance_matrix_type.distance_matrix_type.distance_matrix }
+                                                             #elif str( $distance_matrix_type.distance_matrix_type.distance_matrix_type_selector ) == 'boolean':
+                                                                 distance.matrix = ${ distance_matrix_type.distance_matrix_type.distance_matrix }
+                                                             #elif str( $distance_matrix_type.distance_matrix_type.distance_matrix_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 distance.matrix = "${ distance_matrix_type.distance_matrix_type.distance_matrix }"
+                                                             #elif str( $distance_matrix_type.distance_matrix_type.distance_matrix_type_selector ) == 'NULL':
+                                                                 distance.matrix = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $save_SNN_type.save_SNN_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $save_SNN_type.save_SNN_type.save_SNN_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $save_SNN_type.save_SNN_type.save_SNN_type_selector ) == 'dataset':
+                                                                 save.SNN = readRDS("${save_SNN_type.save_SNN_type.save_SNN}")
+                                                             #elif str( $save_SNN_type.save_SNN_type.save_SNN_type_selector ) == 'text':
+                                                                 save.SNN = "${ save_SNN_type.save_SNN_type.save_SNN }"
+                                                             #elif str( $save_SNN_type.save_SNN_type.save_SNN_type_selector ) == 'integer':
+                                                                 save.SNN = ${ save_SNN_type.save_SNN_type.save_SNN }
+                                                             #elif str( $save_SNN_type.save_SNN_type.save_SNN_type_selector ) == 'float':
+                                                                 save.SNN = ${ save_SNN_type.save_SNN_type.save_SNN }
+                                                             #elif str( $save_SNN_type.save_SNN_type.save_SNN_type_selector ) == 'boolean':
+                                                                 save.SNN = ${ save_SNN_type.save_SNN_type.save_SNN }
+                                                             #elif str( $save_SNN_type.save_SNN_type.save_SNN_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 save.SNN = "${ save_SNN_type.save_SNN_type.save_SNN }"
+                                                             #elif str( $save_SNN_type.save_SNN_type.save_SNN_type_selector ) == 'NULL':
+                                                                 save.SNN = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $reuse_SNN_type.reuse_SNN_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $reuse_SNN_type.reuse_SNN_type.reuse_SNN_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $reuse_SNN_type.reuse_SNN_type.reuse_SNN_type_selector ) == 'dataset':
+                                                                 reuse.SNN = readRDS("${reuse_SNN_type.reuse_SNN_type.reuse_SNN}")
+                                                             #elif str( $reuse_SNN_type.reuse_SNN_type.reuse_SNN_type_selector ) == 'text':
+                                                                 reuse.SNN = "${ reuse_SNN_type.reuse_SNN_type.reuse_SNN }"
+                                                             #elif str( $reuse_SNN_type.reuse_SNN_type.reuse_SNN_type_selector ) == 'integer':
+                                                                 reuse.SNN = ${ reuse_SNN_type.reuse_SNN_type.reuse_SNN }
+                                                             #elif str( $reuse_SNN_type.reuse_SNN_type.reuse_SNN_type_selector ) == 'float':
+                                                                 reuse.SNN = ${ reuse_SNN_type.reuse_SNN_type.reuse_SNN }
+                                                             #elif str( $reuse_SNN_type.reuse_SNN_type.reuse_SNN_type_selector ) == 'boolean':
+                                                                 reuse.SNN = ${ reuse_SNN_type.reuse_SNN_type.reuse_SNN }
+                                                             #elif str( $reuse_SNN_type.reuse_SNN_type.reuse_SNN_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 reuse.SNN = "${ reuse_SNN_type.reuse_SNN_type.reuse_SNN }"
+                                                             #elif str( $reuse_SNN_type.reuse_SNN_type.reuse_SNN_type_selector ) == 'NULL':
+                                                                 reuse.SNN = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $force_recalc_type.force_recalc_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $force_recalc_type.force_recalc_type.force_recalc_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $force_recalc_type.force_recalc_type.force_recalc_type_selector ) == 'dataset':
+                                                                 force.recalc = readRDS("${force_recalc_type.force_recalc_type.force_recalc}")
+                                                             #elif str( $force_recalc_type.force_recalc_type.force_recalc_type_selector ) == 'text':
+                                                                 force.recalc = "${ force_recalc_type.force_recalc_type.force_recalc }"
+                                                             #elif str( $force_recalc_type.force_recalc_type.force_recalc_type_selector ) == 'integer':
+                                                                 force.recalc = ${ force_recalc_type.force_recalc_type.force_recalc }
+                                                             #elif str( $force_recalc_type.force_recalc_type.force_recalc_type_selector ) == 'float':
+                                                                 force.recalc = ${ force_recalc_type.force_recalc_type.force_recalc }
+                                                             #elif str( $force_recalc_type.force_recalc_type.force_recalc_type_selector ) == 'boolean':
+                                                                 force.recalc = ${ force_recalc_type.force_recalc_type.force_recalc }
+                                                             #elif str( $force_recalc_type.force_recalc_type.force_recalc_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 force.recalc = "${ force_recalc_type.force_recalc_type.force_recalc }"
+                                                             #elif str( $force_recalc_type.force_recalc_type.force_recalc_type_selector ) == 'NULL':
+                                                                 force.recalc = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $nn_eps_type.nn_eps_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $nn_eps_type.nn_eps_type.nn_eps_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $nn_eps_type.nn_eps_type.nn_eps_type_selector ) == 'dataset':
+                                                                 nn.eps = readRDS("${nn_eps_type.nn_eps_type.nn_eps}")
+                                                             #elif str( $nn_eps_type.nn_eps_type.nn_eps_type_selector ) == 'text':
+                                                                 nn.eps = "${ nn_eps_type.nn_eps_type.nn_eps }"
+                                                             #elif str( $nn_eps_type.nn_eps_type.nn_eps_type_selector ) == 'integer':
+                                                                 nn.eps = ${ nn_eps_type.nn_eps_type.nn_eps }
+                                                             #elif str( $nn_eps_type.nn_eps_type.nn_eps_type_selector ) == 'float':
+                                                                 nn.eps = ${ nn_eps_type.nn_eps_type.nn_eps }
+                                                             #elif str( $nn_eps_type.nn_eps_type.nn_eps_type_selector ) == 'boolean':
+                                                                 nn.eps = ${ nn_eps_type.nn_eps_type.nn_eps }
+                                                             #elif str( $nn_eps_type.nn_eps_type.nn_eps_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 nn.eps = "${ nn_eps_type.nn_eps_type.nn_eps }"
+                                                             #elif str( $nn_eps_type.nn_eps_type.nn_eps_type_selector ) == 'NULL':
+                                                                 nn.eps = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $modularity_fxn_type.modularity_fxn_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $modularity_fxn_type.modularity_fxn_type.modularity_fxn_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $modularity_fxn_type.modularity_fxn_type.modularity_fxn_type_selector ) == 'dataset':
+                                                                 modularity.fxn = readRDS("${modularity_fxn_type.modularity_fxn_type.modularity_fxn}")
+                                                             #elif str( $modularity_fxn_type.modularity_fxn_type.modularity_fxn_type_selector ) == 'text':
+                                                                 modularity.fxn = "${ modularity_fxn_type.modularity_fxn_type.modularity_fxn }"
+                                                             #elif str( $modularity_fxn_type.modularity_fxn_type.modularity_fxn_type_selector ) == 'integer':
+                                                                 modularity.fxn = ${ modularity_fxn_type.modularity_fxn_type.modularity_fxn }
+                                                             #elif str( $modularity_fxn_type.modularity_fxn_type.modularity_fxn_type_selector ) == 'float':
+                                                                 modularity.fxn = ${ modularity_fxn_type.modularity_fxn_type.modularity_fxn }
+                                                             #elif str( $modularity_fxn_type.modularity_fxn_type.modularity_fxn_type_selector ) == 'boolean':
+                                                                 modularity.fxn = ${ modularity_fxn_type.modularity_fxn_type.modularity_fxn }
+                                                             #elif str( $modularity_fxn_type.modularity_fxn_type.modularity_fxn_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 modularity.fxn = "${ modularity_fxn_type.modularity_fxn_type.modularity_fxn }"
+                                                             #elif str( $modularity_fxn_type.modularity_fxn_type.modularity_fxn_type_selector ) == 'NULL':
+                                                                 modularity.fxn = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $resolution_type.resolution_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $resolution_type.resolution_type.resolution_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $resolution_type.resolution_type.resolution_type_selector ) == 'dataset':
+                                                                 resolution = readRDS("${resolution_type.resolution_type.resolution}")
+                                                             #elif str( $resolution_type.resolution_type.resolution_type_selector ) == 'text':
+                                                                 resolution = "${ resolution_type.resolution_type.resolution }"
+                                                             #elif str( $resolution_type.resolution_type.resolution_type_selector ) == 'integer':
+                                                                 resolution = ${ resolution_type.resolution_type.resolution }
+                                                             #elif str( $resolution_type.resolution_type.resolution_type_selector ) == 'float':
+                                                                 resolution = ${ resolution_type.resolution_type.resolution }
+                                                             #elif str( $resolution_type.resolution_type.resolution_type_selector ) == 'boolean':
+                                                                 resolution = ${ resolution_type.resolution_type.resolution }
+                                                             #elif str( $resolution_type.resolution_type.resolution_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 resolution = "${ resolution_type.resolution_type.resolution }"
+                                                             #elif str( $resolution_type.resolution_type.resolution_type_selector ) == 'NULL':
+                                                                 resolution = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $algorithm_type.algorithm_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $algorithm_type.algorithm_type.algorithm_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $algorithm_type.algorithm_type.algorithm_type_selector ) == 'dataset':
+                                                                 algorithm = readRDS("${algorithm_type.algorithm_type.algorithm}")
+                                                             #elif str( $algorithm_type.algorithm_type.algorithm_type_selector ) == 'text':
+                                                                 algorithm = "${ algorithm_type.algorithm_type.algorithm }"
+                                                             #elif str( $algorithm_type.algorithm_type.algorithm_type_selector ) == 'integer':
+                                                                 algorithm = ${ algorithm_type.algorithm_type.algorithm }
+                                                             #elif str( $algorithm_type.algorithm_type.algorithm_type_selector ) == 'float':
+                                                                 algorithm = ${ algorithm_type.algorithm_type.algorithm }
+                                                             #elif str( $algorithm_type.algorithm_type.algorithm_type_selector ) == 'boolean':
+                                                                 algorithm = ${ algorithm_type.algorithm_type.algorithm }
+                                                             #elif str( $algorithm_type.algorithm_type.algorithm_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 algorithm = "${ algorithm_type.algorithm_type.algorithm }"
+                                                             #elif str( $algorithm_type.algorithm_type.algorithm_type_selector ) == 'NULL':
+                                                                 algorithm = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $n_start_type.n_start_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $n_start_type.n_start_type.n_start_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $n_start_type.n_start_type.n_start_type_selector ) == 'dataset':
+                                                                 n.start = readRDS("${n_start_type.n_start_type.n_start}")
+                                                             #elif str( $n_start_type.n_start_type.n_start_type_selector ) == 'text':
+                                                                 n.start = "${ n_start_type.n_start_type.n_start }"
+                                                             #elif str( $n_start_type.n_start_type.n_start_type_selector ) == 'integer':
+                                                                 n.start = ${ n_start_type.n_start_type.n_start }
+                                                             #elif str( $n_start_type.n_start_type.n_start_type_selector ) == 'float':
+                                                                 n.start = ${ n_start_type.n_start_type.n_start }
+                                                             #elif str( $n_start_type.n_start_type.n_start_type_selector ) == 'boolean':
+                                                                 n.start = ${ n_start_type.n_start_type.n_start }
+                                                             #elif str( $n_start_type.n_start_type.n_start_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 n.start = "${ n_start_type.n_start_type.n_start }"
+                                                             #elif str( $n_start_type.n_start_type.n_start_type_selector ) == 'NULL':
+                                                                 n.start = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $n_iter_type.n_iter_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $n_iter_type.n_iter_type.n_iter_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $n_iter_type.n_iter_type.n_iter_type_selector ) == 'dataset':
+                                                                 n.iter = readRDS("${n_iter_type.n_iter_type.n_iter}")
+                                                             #elif str( $n_iter_type.n_iter_type.n_iter_type_selector ) == 'text':
+                                                                 n.iter = "${ n_iter_type.n_iter_type.n_iter }"
+                                                             #elif str( $n_iter_type.n_iter_type.n_iter_type_selector ) == 'integer':
+                                                                 n.iter = ${ n_iter_type.n_iter_type.n_iter }
+                                                             #elif str( $n_iter_type.n_iter_type.n_iter_type_selector ) == 'float':
+                                                                 n.iter = ${ n_iter_type.n_iter_type.n_iter }
+                                                             #elif str( $n_iter_type.n_iter_type.n_iter_type_selector ) == 'boolean':
+                                                                 n.iter = ${ n_iter_type.n_iter_type.n_iter }
+                                                             #elif str( $n_iter_type.n_iter_type.n_iter_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 n.iter = "${ n_iter_type.n_iter_type.n_iter }"
+                                                             #elif str( $n_iter_type.n_iter_type.n_iter_type_selector ) == 'NULL':
+                                                                 n.iter = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $random_seed_type.random_seed_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $random_seed_type.random_seed_type.random_seed_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $random_seed_type.random_seed_type.random_seed_type_selector ) == 'dataset':
+                                                                 random.seed = readRDS("${random_seed_type.random_seed_type.random_seed}")
+                                                             #elif str( $random_seed_type.random_seed_type.random_seed_type_selector ) == 'text':
+                                                                 random.seed = "${ random_seed_type.random_seed_type.random_seed }"
+                                                             #elif str( $random_seed_type.random_seed_type.random_seed_type_selector ) == 'integer':
+                                                                 random.seed = ${ random_seed_type.random_seed_type.random_seed }
+                                                             #elif str( $random_seed_type.random_seed_type.random_seed_type_selector ) == 'float':
+                                                                 random.seed = ${ random_seed_type.random_seed_type.random_seed }
+                                                             #elif str( $random_seed_type.random_seed_type.random_seed_type_selector ) == 'boolean':
+                                                                 random.seed = ${ random_seed_type.random_seed_type.random_seed }
+                                                             #elif str( $random_seed_type.random_seed_type.random_seed_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 random.seed = "${ random_seed_type.random_seed_type.random_seed }"
+                                                             #elif str( $random_seed_type.random_seed_type.random_seed_type_selector ) == 'NULL':
+                                                                 random.seed = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $temp_file_location_type.temp_file_location_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $temp_file_location_type.temp_file_location_type.temp_file_location_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $temp_file_location_type.temp_file_location_type.temp_file_location_type_selector ) == 'dataset':
+                                                                 temp.file.location = readRDS("${temp_file_location_type.temp_file_location_type.temp_file_location}")
+                                                             #elif str( $temp_file_location_type.temp_file_location_type.temp_file_location_type_selector ) == 'text':
+                                                                 temp.file.location = "${ temp_file_location_type.temp_file_location_type.temp_file_location }"
+                                                             #elif str( $temp_file_location_type.temp_file_location_type.temp_file_location_type_selector ) == 'integer':
+                                                                 temp.file.location = ${ temp_file_location_type.temp_file_location_type.temp_file_location }
+                                                             #elif str( $temp_file_location_type.temp_file_location_type.temp_file_location_type_selector ) == 'float':
+                                                                 temp.file.location = ${ temp_file_location_type.temp_file_location_type.temp_file_location }
+                                                             #elif str( $temp_file_location_type.temp_file_location_type.temp_file_location_type_selector ) == 'boolean':
+                                                                 temp.file.location = ${ temp_file_location_type.temp_file_location_type.temp_file_location }
+                                                             #elif str( $temp_file_location_type.temp_file_location_type.temp_file_location_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 temp.file.location = "${ temp_file_location_type.temp_file_location_type.temp_file_location }"
+                                                             #elif str( $temp_file_location_type.temp_file_location_type.temp_file_location_type_selector ) == 'NULL':
+                                                                 temp.file.location = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $edge_file_name_type.edge_file_name_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $edge_file_name_type.edge_file_name_type.edge_file_name_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $edge_file_name_type.edge_file_name_type.edge_file_name_type_selector ) == 'dataset':
+                                                                 edge.file.name = readRDS("${edge_file_name_type.edge_file_name_type.edge_file_name}")
+                                                             #elif str( $edge_file_name_type.edge_file_name_type.edge_file_name_type_selector ) == 'text':
+                                                                 edge.file.name = "${ edge_file_name_type.edge_file_name_type.edge_file_name }"
+                                                             #elif str( $edge_file_name_type.edge_file_name_type.edge_file_name_type_selector ) == 'integer':
+                                                                 edge.file.name = ${ edge_file_name_type.edge_file_name_type.edge_file_name }
+                                                             #elif str( $edge_file_name_type.edge_file_name_type.edge_file_name_type_selector ) == 'float':
+                                                                 edge.file.name = ${ edge_file_name_type.edge_file_name_type.edge_file_name }
+                                                             #elif str( $edge_file_name_type.edge_file_name_type.edge_file_name_type_selector ) == 'boolean':
+                                                                 edge.file.name = ${ edge_file_name_type.edge_file_name_type.edge_file_name }
+                                                             #elif str( $edge_file_name_type.edge_file_name_type.edge_file_name_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 edge.file.name = "${ edge_file_name_type.edge_file_name_type.edge_file_name }"
+                                                             #elif str( $edge_file_name_type.edge_file_name_type.edge_file_name_type_selector ) == 'NULL':
+                                                                 edge.file.name = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+)
+#if "output_r_dataset" in $include_files:
+    saveRDS(rval, file = "${output_r_dataset}", ascii = FALSE, version = 2, compress = TRUE )
+#end if
+
+    ]]>
+         </configfile>
+    </configfiles>
+    <inputs>
+        
+        <conditional name="object_type">
+            <param name="object_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="object: Provide value"/>
+            <when value="True">
+                
+        <conditional name="object_type">
+            <param name="object_type_selector" type="select" label="object: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="object" type="data" format="rds" label="object" help="$object"/>
+            </when>
+            <when value="text">
+                <param name="object" type="text" value="" label="object" help="$object"/>
+            </when>
+            <when value="integer">
+                <param name="object" type="integer" value="" label="object" help="$object"/>
+            </when>
+            <when value="float">
+                <param name="object" type="float" value="" label="object" help="$object"/>
+            </when>
+            <when value="boolean">
+                <param name="object" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="object" help="$object"/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="genes_use_type">
+            <param name="genes_use_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="genes_use: Provide value"/>
+            <when value="True">
+                
+        <conditional name="genes_use_type">
+            <param name="genes_use_type_selector" type="select" label="genes_use: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="genes_use" type="data" format="rds" label="genes.use" help="$genes.use&#10;NULL"/>
+            </when>
+            <when value="text">
+                <param name="genes_use" type="text" value="" label="genes.use" help="$genes.use&#10;NULL"/>
+            </when>
+            <when value="integer">
+                <param name="genes_use" type="integer" value="" label="genes.use" help="$genes.use&#10;NULL"/>
+            </when>
+            <when value="float">
+                <param name="genes_use" type="float" value="" label="genes.use" help="$genes.use&#10;NULL"/>
+            </when>
+            <when value="boolean">
+                <param name="genes_use" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="genes.use" help="$genes.use&#10;NULL"/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="reduction_type_type">
+            <param name="reduction_type_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="reduction_type: Provide value"/>
+            <when value="True">
+                <param name="reduction_type" type="text" value="pca" label="reduction.type" help='$reduction.type&#10;[1] "pca"'/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="dims_use_type">
+            <param name="dims_use_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="dims_use: Provide value"/>
+            <when value="True">
+                
+        <conditional name="dims_use_type">
+            <param name="dims_use_type_selector" type="select" label="dims_use: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="dims_use" type="data" format="rds" label="dims.use" help="$dims.use&#10;NULL"/>
+            </when>
+            <when value="text">
+                <param name="dims_use" type="text" value="" label="dims.use" help="$dims.use&#10;NULL"/>
+            </when>
+            <when value="integer">
+                <param name="dims_use" type="integer" value="" label="dims.use" help="$dims.use&#10;NULL"/>
+            </when>
+            <when value="float">
+                <param name="dims_use" type="float" value="" label="dims.use" help="$dims.use&#10;NULL"/>
+            </when>
+            <when value="boolean">
+                <param name="dims_use" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="dims.use" help="$dims.use&#10;NULL"/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="k_param_type">
+            <param name="k_param_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="k_param: Provide value"/>
+            <when value="True">
+                <param name="k_param" type="float" value="30.0" label="k.param" help="$k.param&#10;[1] 30"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="plot_SNN_type">
+            <param name="plot_SNN_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="plot_SNN: Provide value"/>
+            <when value="True">
+                <param name="plot_SNN" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="False" label="plot.SNN" help="$plot.SNN&#10;[1] FALSE"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="prune_SNN_type">
+            <param name="prune_SNN_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="prune_SNN: Provide value"/>
+            <when value="True">
+                
+        <conditional name="prune_SNN_type">
+            <param name="prune_SNN_type_selector" type="select" label="prune_SNN: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="prune_SNN" type="data" format="rds" label="prune.SNN" help="$prune.SNN&#10;1/15"/>
+            </when>
+            <when value="text">
+                <param name="prune_SNN" type="text" value="" label="prune.SNN" help="$prune.SNN&#10;1/15"/>
+            </when>
+            <when value="integer">
+                <param name="prune_SNN" type="integer" value="" label="prune.SNN" help="$prune.SNN&#10;1/15"/>
+            </when>
+            <when value="float">
+                <param name="prune_SNN" type="float" value="" label="prune.SNN" help="$prune.SNN&#10;1/15"/>
+            </when>
+            <when value="boolean">
+                <param name="prune_SNN" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="prune.SNN" help="$prune.SNN&#10;1/15"/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="print_output_type">
+            <param name="print_output_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="print_output: Provide value"/>
+            <when value="True">
+                <param name="print_output" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="True" label="print.output" help="$print.output&#10;[1] TRUE"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="distance_matrix_type">
+            <param name="distance_matrix_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="distance_matrix: Provide value"/>
+            <when value="True">
+                
+        <conditional name="distance_matrix_type">
+            <param name="distance_matrix_type_selector" type="select" label="distance_matrix: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="distance_matrix" type="data" format="rds" label="distance.matrix" help="$distance.matrix&#10;NULL"/>
+            </when>
+            <when value="text">
+                <param name="distance_matrix" type="text" value="" label="distance.matrix" help="$distance.matrix&#10;NULL"/>
+            </when>
+            <when value="integer">
+                <param name="distance_matrix" type="integer" value="" label="distance.matrix" help="$distance.matrix&#10;NULL"/>
+            </when>
+            <when value="float">
+                <param name="distance_matrix" type="float" value="" label="distance.matrix" help="$distance.matrix&#10;NULL"/>
+            </when>
+            <when value="boolean">
+                <param name="distance_matrix" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="distance.matrix" help="$distance.matrix&#10;NULL"/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="save_SNN_type">
+            <param name="save_SNN_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="save_SNN: Provide value"/>
+            <when value="True">
+                <param name="save_SNN" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="False" label="save.SNN" help="$save.SNN&#10;[1] FALSE"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="reuse_SNN_type">
+            <param name="reuse_SNN_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="reuse_SNN: Provide value"/>
+            <when value="True">
+                <param name="reuse_SNN" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="False" label="reuse.SNN" help="$reuse.SNN&#10;[1] FALSE"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="force_recalc_type">
+            <param name="force_recalc_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="force_recalc: Provide value"/>
+            <when value="True">
+                <param name="force_recalc" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="False" label="force.recalc" help="$force.recalc&#10;[1] FALSE"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="nn_eps_type">
+            <param name="nn_eps_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="nn_eps: Provide value"/>
+            <when value="True">
+                <param name="nn_eps" type="float" value="0.0" label="nn.eps" help="$nn.eps&#10;[1] 0"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="modularity_fxn_type">
+            <param name="modularity_fxn_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="modularity_fxn: Provide value"/>
+            <when value="True">
+                <param name="modularity_fxn" type="float" value="1.0" label="modularity.fxn" help="$modularity.fxn&#10;[1] 1"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="resolution_type">
+            <param name="resolution_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="resolution: Provide value"/>
+            <when value="True">
+                <param name="resolution" type="float" value="0.8" label="resolution" help="$resolution&#10;[1] 0.8"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="algorithm_type">
+            <param name="algorithm_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="algorithm: Provide value"/>
+            <when value="True">
+                <param name="algorithm" type="float" value="1.0" label="algorithm" help="$algorithm&#10;[1] 1"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="n_start_type">
+            <param name="n_start_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="n_start: Provide value"/>
+            <when value="True">
+                <param name="n_start" type="float" value="100.0" label="n.start" help="$n.start&#10;[1] 100"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="n_iter_type">
+            <param name="n_iter_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="n_iter: Provide value"/>
+            <when value="True">
+                <param name="n_iter" type="float" value="10.0" label="n.iter" help="$n.iter&#10;[1] 10"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="random_seed_type">
+            <param name="random_seed_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="random_seed: Provide value"/>
+            <when value="True">
+                <param name="random_seed" type="float" value="0.0" label="random.seed" help="$random.seed&#10;[1] 0"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="temp_file_location_type">
+            <param name="temp_file_location_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="temp_file_location: Provide value"/>
+            <when value="True">
+                
+        <conditional name="temp_file_location_type">
+            <param name="temp_file_location_type_selector" type="select" label="temp_file_location: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="temp_file_location" type="data" format="rds" label="temp.file.location" help="$temp.file.location&#10;NULL"/>
+            </when>
+            <when value="text">
+                <param name="temp_file_location" type="text" value="" label="temp.file.location" help="$temp.file.location&#10;NULL"/>
+            </when>
+            <when value="integer">
+                <param name="temp_file_location" type="integer" value="" label="temp.file.location" help="$temp.file.location&#10;NULL"/>
+            </when>
+            <when value="float">
+                <param name="temp_file_location" type="float" value="" label="temp.file.location" help="$temp.file.location&#10;NULL"/>
+            </when>
+            <when value="boolean">
+                <param name="temp_file_location" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="temp.file.location" help="$temp.file.location&#10;NULL"/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="edge_file_name_type">
+            <param name="edge_file_name_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="edge_file_name: Provide value"/>
+            <when value="True">
+                
+        <conditional name="edge_file_name_type">
+            <param name="edge_file_name_type_selector" type="select" label="edge_file_name: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="edge_file_name" type="data" format="rds" label="edge.file.name" help="$edge.file.name&#10;NULL"/>
+            </when>
+            <when value="text">
+                <param name="edge_file_name" type="text" value="" label="edge.file.name" help="$edge.file.name&#10;NULL"/>
+            </when>
+            <when value="integer">
+                <param name="edge_file_name" type="integer" value="" label="edge.file.name" help="$edge.file.name&#10;NULL"/>
+            </when>
+            <when value="float">
+                <param name="edge_file_name" type="float" value="" label="edge.file.name" help="$edge.file.name&#10;NULL"/>
+            </when>
+            <when value="boolean">
+                <param name="edge_file_name" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="edge.file.name" help="$edge.file.name&#10;NULL"/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        <param name="include_outputs" type="select" multiple="True" label="Datasets to create">
+            <option value="output_r_dataset" selected="true">Results in RDS format</option>
+            <option value="output_r_script" selected="false">R script</option>
+        </param>
+    </inputs>
+    <outputs>
+        <data format="rds" name="output_r_dataset" label="${tool.name} on ${on_string} (RDS)">
+            <filter>"output_r_dataset" in include_outputs</filter>
+        </data>
+        <data format="txt" name="output_r_script" label="${tool.name} on ${on_string} (Rscript)">
+            <filter>"output_r_script" in include_outputs</filter>
+        </data>
+    </outputs>
+    <help><![CDATA[
+Automatically Parsed R Help
+===========================
+
+Title
+-----
+
+::
+  
+  Cluster Determination 
+
+Name
+----
+
+::
+  
+  FindClusters 
+
+Alias
+-----
+
+::
+  
+  FindClusters 
+
+Description
+-----------
+
+::
+  
+  
+   Identify clusters of cells by a shared nearest neighbor (SNN) modularity
+   optimization based clustering algorithm. First calculate k-nearest neighbors
+   and construct the SNN graph. Then optimize the modularity function to
+   determine clusters. For a full description of the algorithms, see Waltman and
+   van Eck (2013)  The European Physical Journal B . Thanks to Nigel
+   Delaney (evolvedmicrobe@github) for the rewrite of the Java modularity
+   optimizer code in Rcpp!
+   
+
+Usage
+-----
+
+::
+  
+  
+   FindClusters(object, genes.use = NULL, reduction.type = "pca",
+     dims.use = NULL, k.param = 30, plot.SNN = FALSE, prune.SNN = 1/15,
+     print.output = TRUE, distance.matrix = NULL, save.SNN = FALSE,
+     reuse.SNN = FALSE, force.recalc = FALSE, nn.eps = 0,
+     modularity.fxn = 1, resolution = 0.8, algorithm = 1, n.start = 100,
+     n.iter = 10, random.seed = 0, temp.file.location = NULL,
+     edge.file.name = NULL)
+   
+
+Arguments
+---------
+
+::
+  
+  
+   object Seurat object 
+   
+   genes.use A vector of gene names to use in construction of SNN graph
+   if building directly based on expression data rather than a dimensionally
+   reduced representation (i.e. PCs). 
+   
+   reduction.type Name of dimensional reduction technique to use in
+   construction of SNN graph. (e.g. "pca", "ica") 
+   
+   dims.use A vector of the dimensions to use in construction of the SNN
+   graph (e.g. To use the first 10 PCs, pass 1:10) 
+   
+   k.param Defines k for the k-nearest neighbor algorithm 
+   
+   plot.SNN Plot the SNN graph 
+   
+   prune.SNN Sets the cutoff for acceptable Jaccard index when
+   computing the neighborhood overlap for the SNN construction. Any edges with
+   values less than or equal to this will be set to 0 and removed from the SNN
+   graph. Essentially sets the strigency of pruning (0 --- no pruning, 1 ---
+   prune everything). 
+   
+   print.output Whether or not to print output to the console 
+   
+   distance.matrix Build SNN from distance matrix (experimental) 
+   
+   save.SNN Saves the SNN matrix associated with the calculation in
+   object@snn 
+   
+   reuse.SNN Force utilization of stored SNN. If none store, this will
+   throw an error. 
+   
+   force.recalc Force recalculation of SNN. 
+   
+   nn.eps Error bound when performing nearest neighbor seach using RANN;
+   default of 0.0 implies exact nearest neighbor search 
+   
+   modularity.fxn Modularity function (1 = standard; 2 = alternative). 
+   
+   resolution Value of the resolution parameter, use a value above
+   (below) 1.0 if you want to obtain a larger (smaller) number of communities. 
+   
+   algorithm Algorithm for modularity optimization (1 = original Louvain
+   algorithm; 2 = Louvain algorithm with multilevel refinement; 3 = SLM
+   algorithm). 
+   
+   n.start Number of random starts. 
+   
+   n.iter Maximal number of iterations per random start. 
+   
+   random.seed Seed of the random number generator. 
+   
+   temp.file.location Directory where intermediate files will be written.
+   Specify the ABSOLUTE path. 
+   
+   edge.file.name Edge file to use as input for modularity optimizer jar. 
+   
+
+Value
+-----
+
+::
+  
+  
+   Returns a Seurat object and optionally the SNN matrix,
+           object@ident has been updated with new cluster info
+   
+
+Examples
+--------
+
+::
+  
+  
+   
+   pbmc_small
+   pmbc_small <- FindClusters(
+     object = pbmc_small,
+     reduction.type = "pca",
+     dims.use = 1:10,
+     save.SNN = TRUE
+   )
+   # To explore a range of clustering options, pass a vector of values to the resolution parameter
+   pbmc_small <- FindClusters(
+     object = pbmc_small,
+     reduction.type = "pca",
+     resolution = c(0.4, 0.8, 1.2),
+     dims.use = 1:10,
+     save.SNN = TRUE
+   )
+    ]]></help>
+<tests>
+    <test>
+    </test>
+</tests>
+<citations>
+</citations>
+</tool>
+<!-- Created automatically using R2-G2: https://github.com/blankenberg/r2g2 -->

@@ -1,0 +1,1661 @@
+<tool id="Seurat_DimPlot" name="DimPlot" version="@VERSION@-0.0.1">
+    <description><![CDATA[Dimensional reduction plot]]></description>
+    <macros>
+        <import>Seurat_macros.xml</import>
+    </macros>
+    <expand macro="requirements" />
+    <expand macro="stdio" />
+    <expand macro="version_command" />
+    <command><![CDATA[
+        #if "output_r_script" in str( $include_outputs ).split( "," ):
+            cp '${Seurat_DimPlot_script}' '${output_r_script}' &&
+        #end if
+        Rscript '${Seurat_DimPlot_script}'
+    ]]>
+    </command>
+    <configfiles>
+         <configfile name="Seurat_DimPlot_script"><![CDATA[#!/usr/bin/env RScript
+#set $include_files = str( $include_outputs ).split( "," )
+library(Seurat)
+#set $___USE_COMMA___ = ""
+rval <- DimPlot(
+#if str( $object_type.object_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $object_type.object_type.object_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $object_type.object_type.object_type_selector ) == 'dataset':
+                                                                 object = readRDS("${object_type.object_type.object}")
+                                                             #elif str( $object_type.object_type.object_type_selector ) == 'text':
+                                                                 object = "${ object_type.object_type.object }"
+                                                             #elif str( $object_type.object_type.object_type_selector ) == 'integer':
+                                                                 object = ${ object_type.object_type.object }
+                                                             #elif str( $object_type.object_type.object_type_selector ) == 'float':
+                                                                 object = ${ object_type.object_type.object }
+                                                             #elif str( $object_type.object_type.object_type_selector ) == 'boolean':
+                                                                 object = ${ object_type.object_type.object }
+                                                             #elif str( $object_type.object_type.object_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 object = "${ object_type.object_type.object }"
+                                                             #elif str( $object_type.object_type.object_type_selector ) == 'NULL':
+                                                                 object = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $reduction_use_type.reduction_use_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $reduction_use_type.reduction_use_type.reduction_use_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $reduction_use_type.reduction_use_type.reduction_use_type_selector ) == 'dataset':
+                                                                 reduction.use = readRDS("${reduction_use_type.reduction_use_type.reduction_use}")
+                                                             #elif str( $reduction_use_type.reduction_use_type.reduction_use_type_selector ) == 'text':
+                                                                 reduction.use = "${ reduction_use_type.reduction_use_type.reduction_use }"
+                                                             #elif str( $reduction_use_type.reduction_use_type.reduction_use_type_selector ) == 'integer':
+                                                                 reduction.use = ${ reduction_use_type.reduction_use_type.reduction_use }
+                                                             #elif str( $reduction_use_type.reduction_use_type.reduction_use_type_selector ) == 'float':
+                                                                 reduction.use = ${ reduction_use_type.reduction_use_type.reduction_use }
+                                                             #elif str( $reduction_use_type.reduction_use_type.reduction_use_type_selector ) == 'boolean':
+                                                                 reduction.use = ${ reduction_use_type.reduction_use_type.reduction_use }
+                                                             #elif str( $reduction_use_type.reduction_use_type.reduction_use_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 reduction.use = "${ reduction_use_type.reduction_use_type.reduction_use }"
+                                                             #elif str( $reduction_use_type.reduction_use_type.reduction_use_type_selector ) == 'NULL':
+                                                                 reduction.use = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $dim_1_type.dim_1_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $dim_1_type.dim_1_type.dim_1_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $dim_1_type.dim_1_type.dim_1_type_selector ) == 'dataset':
+                                                                 dim.1 = readRDS("${dim_1_type.dim_1_type.dim_1}")
+                                                             #elif str( $dim_1_type.dim_1_type.dim_1_type_selector ) == 'text':
+                                                                 dim.1 = "${ dim_1_type.dim_1_type.dim_1 }"
+                                                             #elif str( $dim_1_type.dim_1_type.dim_1_type_selector ) == 'integer':
+                                                                 dim.1 = ${ dim_1_type.dim_1_type.dim_1 }
+                                                             #elif str( $dim_1_type.dim_1_type.dim_1_type_selector ) == 'float':
+                                                                 dim.1 = ${ dim_1_type.dim_1_type.dim_1 }
+                                                             #elif str( $dim_1_type.dim_1_type.dim_1_type_selector ) == 'boolean':
+                                                                 dim.1 = ${ dim_1_type.dim_1_type.dim_1 }
+                                                             #elif str( $dim_1_type.dim_1_type.dim_1_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 dim.1 = "${ dim_1_type.dim_1_type.dim_1 }"
+                                                             #elif str( $dim_1_type.dim_1_type.dim_1_type_selector ) == 'NULL':
+                                                                 dim.1 = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $dim_2_type.dim_2_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $dim_2_type.dim_2_type.dim_2_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $dim_2_type.dim_2_type.dim_2_type_selector ) == 'dataset':
+                                                                 dim.2 = readRDS("${dim_2_type.dim_2_type.dim_2}")
+                                                             #elif str( $dim_2_type.dim_2_type.dim_2_type_selector ) == 'text':
+                                                                 dim.2 = "${ dim_2_type.dim_2_type.dim_2 }"
+                                                             #elif str( $dim_2_type.dim_2_type.dim_2_type_selector ) == 'integer':
+                                                                 dim.2 = ${ dim_2_type.dim_2_type.dim_2 }
+                                                             #elif str( $dim_2_type.dim_2_type.dim_2_type_selector ) == 'float':
+                                                                 dim.2 = ${ dim_2_type.dim_2_type.dim_2 }
+                                                             #elif str( $dim_2_type.dim_2_type.dim_2_type_selector ) == 'boolean':
+                                                                 dim.2 = ${ dim_2_type.dim_2_type.dim_2 }
+                                                             #elif str( $dim_2_type.dim_2_type.dim_2_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 dim.2 = "${ dim_2_type.dim_2_type.dim_2 }"
+                                                             #elif str( $dim_2_type.dim_2_type.dim_2_type_selector ) == 'NULL':
+                                                                 dim.2 = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $cells_use_type.cells_use_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $cells_use_type.cells_use_type.cells_use_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $cells_use_type.cells_use_type.cells_use_type_selector ) == 'dataset':
+                                                                 cells.use = readRDS("${cells_use_type.cells_use_type.cells_use}")
+                                                             #elif str( $cells_use_type.cells_use_type.cells_use_type_selector ) == 'text':
+                                                                 cells.use = "${ cells_use_type.cells_use_type.cells_use }"
+                                                             #elif str( $cells_use_type.cells_use_type.cells_use_type_selector ) == 'integer':
+                                                                 cells.use = ${ cells_use_type.cells_use_type.cells_use }
+                                                             #elif str( $cells_use_type.cells_use_type.cells_use_type_selector ) == 'float':
+                                                                 cells.use = ${ cells_use_type.cells_use_type.cells_use }
+                                                             #elif str( $cells_use_type.cells_use_type.cells_use_type_selector ) == 'boolean':
+                                                                 cells.use = ${ cells_use_type.cells_use_type.cells_use }
+                                                             #elif str( $cells_use_type.cells_use_type.cells_use_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 cells.use = "${ cells_use_type.cells_use_type.cells_use }"
+                                                             #elif str( $cells_use_type.cells_use_type.cells_use_type_selector ) == 'NULL':
+                                                                 cells.use = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $pt_size_type.pt_size_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $pt_size_type.pt_size_type.pt_size_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $pt_size_type.pt_size_type.pt_size_type_selector ) == 'dataset':
+                                                                 pt.size = readRDS("${pt_size_type.pt_size_type.pt_size}")
+                                                             #elif str( $pt_size_type.pt_size_type.pt_size_type_selector ) == 'text':
+                                                                 pt.size = "${ pt_size_type.pt_size_type.pt_size }"
+                                                             #elif str( $pt_size_type.pt_size_type.pt_size_type_selector ) == 'integer':
+                                                                 pt.size = ${ pt_size_type.pt_size_type.pt_size }
+                                                             #elif str( $pt_size_type.pt_size_type.pt_size_type_selector ) == 'float':
+                                                                 pt.size = ${ pt_size_type.pt_size_type.pt_size }
+                                                             #elif str( $pt_size_type.pt_size_type.pt_size_type_selector ) == 'boolean':
+                                                                 pt.size = ${ pt_size_type.pt_size_type.pt_size }
+                                                             #elif str( $pt_size_type.pt_size_type.pt_size_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 pt.size = "${ pt_size_type.pt_size_type.pt_size }"
+                                                             #elif str( $pt_size_type.pt_size_type.pt_size_type_selector ) == 'NULL':
+                                                                 pt.size = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $do_return_type.do_return_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $do_return_type.do_return_type.do_return_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $do_return_type.do_return_type.do_return_type_selector ) == 'dataset':
+                                                                 do.return = readRDS("${do_return_type.do_return_type.do_return}")
+                                                             #elif str( $do_return_type.do_return_type.do_return_type_selector ) == 'text':
+                                                                 do.return = "${ do_return_type.do_return_type.do_return }"
+                                                             #elif str( $do_return_type.do_return_type.do_return_type_selector ) == 'integer':
+                                                                 do.return = ${ do_return_type.do_return_type.do_return }
+                                                             #elif str( $do_return_type.do_return_type.do_return_type_selector ) == 'float':
+                                                                 do.return = ${ do_return_type.do_return_type.do_return }
+                                                             #elif str( $do_return_type.do_return_type.do_return_type_selector ) == 'boolean':
+                                                                 do.return = ${ do_return_type.do_return_type.do_return }
+                                                             #elif str( $do_return_type.do_return_type.do_return_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 do.return = "${ do_return_type.do_return_type.do_return }"
+                                                             #elif str( $do_return_type.do_return_type.do_return_type_selector ) == 'NULL':
+                                                                 do.return = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $do_bare_type.do_bare_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $do_bare_type.do_bare_type.do_bare_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $do_bare_type.do_bare_type.do_bare_type_selector ) == 'dataset':
+                                                                 do.bare = readRDS("${do_bare_type.do_bare_type.do_bare}")
+                                                             #elif str( $do_bare_type.do_bare_type.do_bare_type_selector ) == 'text':
+                                                                 do.bare = "${ do_bare_type.do_bare_type.do_bare }"
+                                                             #elif str( $do_bare_type.do_bare_type.do_bare_type_selector ) == 'integer':
+                                                                 do.bare = ${ do_bare_type.do_bare_type.do_bare }
+                                                             #elif str( $do_bare_type.do_bare_type.do_bare_type_selector ) == 'float':
+                                                                 do.bare = ${ do_bare_type.do_bare_type.do_bare }
+                                                             #elif str( $do_bare_type.do_bare_type.do_bare_type_selector ) == 'boolean':
+                                                                 do.bare = ${ do_bare_type.do_bare_type.do_bare }
+                                                             #elif str( $do_bare_type.do_bare_type.do_bare_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 do.bare = "${ do_bare_type.do_bare_type.do_bare }"
+                                                             #elif str( $do_bare_type.do_bare_type.do_bare_type_selector ) == 'NULL':
+                                                                 do.bare = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $cols_use_type.cols_use_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $cols_use_type.cols_use_type.cols_use_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $cols_use_type.cols_use_type.cols_use_type_selector ) == 'dataset':
+                                                                 cols.use = readRDS("${cols_use_type.cols_use_type.cols_use}")
+                                                             #elif str( $cols_use_type.cols_use_type.cols_use_type_selector ) == 'text':
+                                                                 cols.use = "${ cols_use_type.cols_use_type.cols_use }"
+                                                             #elif str( $cols_use_type.cols_use_type.cols_use_type_selector ) == 'integer':
+                                                                 cols.use = ${ cols_use_type.cols_use_type.cols_use }
+                                                             #elif str( $cols_use_type.cols_use_type.cols_use_type_selector ) == 'float':
+                                                                 cols.use = ${ cols_use_type.cols_use_type.cols_use }
+                                                             #elif str( $cols_use_type.cols_use_type.cols_use_type_selector ) == 'boolean':
+                                                                 cols.use = ${ cols_use_type.cols_use_type.cols_use }
+                                                             #elif str( $cols_use_type.cols_use_type.cols_use_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 cols.use = "${ cols_use_type.cols_use_type.cols_use }"
+                                                             #elif str( $cols_use_type.cols_use_type.cols_use_type_selector ) == 'NULL':
+                                                                 cols.use = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $group_by_type.group_by_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $group_by_type.group_by_type.group_by_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $group_by_type.group_by_type.group_by_type_selector ) == 'dataset':
+                                                                 group.by = readRDS("${group_by_type.group_by_type.group_by}")
+                                                             #elif str( $group_by_type.group_by_type.group_by_type_selector ) == 'text':
+                                                                 group.by = "${ group_by_type.group_by_type.group_by }"
+                                                             #elif str( $group_by_type.group_by_type.group_by_type_selector ) == 'integer':
+                                                                 group.by = ${ group_by_type.group_by_type.group_by }
+                                                             #elif str( $group_by_type.group_by_type.group_by_type_selector ) == 'float':
+                                                                 group.by = ${ group_by_type.group_by_type.group_by }
+                                                             #elif str( $group_by_type.group_by_type.group_by_type_selector ) == 'boolean':
+                                                                 group.by = ${ group_by_type.group_by_type.group_by }
+                                                             #elif str( $group_by_type.group_by_type.group_by_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 group.by = "${ group_by_type.group_by_type.group_by }"
+                                                             #elif str( $group_by_type.group_by_type.group_by_type_selector ) == 'NULL':
+                                                                 group.by = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $pt_shape_type.pt_shape_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $pt_shape_type.pt_shape_type.pt_shape_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $pt_shape_type.pt_shape_type.pt_shape_type_selector ) == 'dataset':
+                                                                 pt.shape = readRDS("${pt_shape_type.pt_shape_type.pt_shape}")
+                                                             #elif str( $pt_shape_type.pt_shape_type.pt_shape_type_selector ) == 'text':
+                                                                 pt.shape = "${ pt_shape_type.pt_shape_type.pt_shape }"
+                                                             #elif str( $pt_shape_type.pt_shape_type.pt_shape_type_selector ) == 'integer':
+                                                                 pt.shape = ${ pt_shape_type.pt_shape_type.pt_shape }
+                                                             #elif str( $pt_shape_type.pt_shape_type.pt_shape_type_selector ) == 'float':
+                                                                 pt.shape = ${ pt_shape_type.pt_shape_type.pt_shape }
+                                                             #elif str( $pt_shape_type.pt_shape_type.pt_shape_type_selector ) == 'boolean':
+                                                                 pt.shape = ${ pt_shape_type.pt_shape_type.pt_shape }
+                                                             #elif str( $pt_shape_type.pt_shape_type.pt_shape_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 pt.shape = "${ pt_shape_type.pt_shape_type.pt_shape }"
+                                                             #elif str( $pt_shape_type.pt_shape_type.pt_shape_type_selector ) == 'NULL':
+                                                                 pt.shape = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $do_hover_type.do_hover_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $do_hover_type.do_hover_type.do_hover_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $do_hover_type.do_hover_type.do_hover_type_selector ) == 'dataset':
+                                                                 do.hover = readRDS("${do_hover_type.do_hover_type.do_hover}")
+                                                             #elif str( $do_hover_type.do_hover_type.do_hover_type_selector ) == 'text':
+                                                                 do.hover = "${ do_hover_type.do_hover_type.do_hover }"
+                                                             #elif str( $do_hover_type.do_hover_type.do_hover_type_selector ) == 'integer':
+                                                                 do.hover = ${ do_hover_type.do_hover_type.do_hover }
+                                                             #elif str( $do_hover_type.do_hover_type.do_hover_type_selector ) == 'float':
+                                                                 do.hover = ${ do_hover_type.do_hover_type.do_hover }
+                                                             #elif str( $do_hover_type.do_hover_type.do_hover_type_selector ) == 'boolean':
+                                                                 do.hover = ${ do_hover_type.do_hover_type.do_hover }
+                                                             #elif str( $do_hover_type.do_hover_type.do_hover_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 do.hover = "${ do_hover_type.do_hover_type.do_hover }"
+                                                             #elif str( $do_hover_type.do_hover_type.do_hover_type_selector ) == 'NULL':
+                                                                 do.hover = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $data_hover_type.data_hover_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $data_hover_type.data_hover_type.data_hover_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $data_hover_type.data_hover_type.data_hover_type_selector ) == 'dataset':
+                                                                 data.hover = readRDS("${data_hover_type.data_hover_type.data_hover}")
+                                                             #elif str( $data_hover_type.data_hover_type.data_hover_type_selector ) == 'text':
+                                                                 data.hover = "${ data_hover_type.data_hover_type.data_hover }"
+                                                             #elif str( $data_hover_type.data_hover_type.data_hover_type_selector ) == 'integer':
+                                                                 data.hover = ${ data_hover_type.data_hover_type.data_hover }
+                                                             #elif str( $data_hover_type.data_hover_type.data_hover_type_selector ) == 'float':
+                                                                 data.hover = ${ data_hover_type.data_hover_type.data_hover }
+                                                             #elif str( $data_hover_type.data_hover_type.data_hover_type_selector ) == 'boolean':
+                                                                 data.hover = ${ data_hover_type.data_hover_type.data_hover }
+                                                             #elif str( $data_hover_type.data_hover_type.data_hover_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 data.hover = "${ data_hover_type.data_hover_type.data_hover }"
+                                                             #elif str( $data_hover_type.data_hover_type.data_hover_type_selector ) == 'NULL':
+                                                                 data.hover = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $do_identify_type.do_identify_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $do_identify_type.do_identify_type.do_identify_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $do_identify_type.do_identify_type.do_identify_type_selector ) == 'dataset':
+                                                                 do.identify = readRDS("${do_identify_type.do_identify_type.do_identify}")
+                                                             #elif str( $do_identify_type.do_identify_type.do_identify_type_selector ) == 'text':
+                                                                 do.identify = "${ do_identify_type.do_identify_type.do_identify }"
+                                                             #elif str( $do_identify_type.do_identify_type.do_identify_type_selector ) == 'integer':
+                                                                 do.identify = ${ do_identify_type.do_identify_type.do_identify }
+                                                             #elif str( $do_identify_type.do_identify_type.do_identify_type_selector ) == 'float':
+                                                                 do.identify = ${ do_identify_type.do_identify_type.do_identify }
+                                                             #elif str( $do_identify_type.do_identify_type.do_identify_type_selector ) == 'boolean':
+                                                                 do.identify = ${ do_identify_type.do_identify_type.do_identify }
+                                                             #elif str( $do_identify_type.do_identify_type.do_identify_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 do.identify = "${ do_identify_type.do_identify_type.do_identify }"
+                                                             #elif str( $do_identify_type.do_identify_type.do_identify_type_selector ) == 'NULL':
+                                                                 do.identify = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $do_label_type.do_label_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $do_label_type.do_label_type.do_label_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $do_label_type.do_label_type.do_label_type_selector ) == 'dataset':
+                                                                 do.label = readRDS("${do_label_type.do_label_type.do_label}")
+                                                             #elif str( $do_label_type.do_label_type.do_label_type_selector ) == 'text':
+                                                                 do.label = "${ do_label_type.do_label_type.do_label }"
+                                                             #elif str( $do_label_type.do_label_type.do_label_type_selector ) == 'integer':
+                                                                 do.label = ${ do_label_type.do_label_type.do_label }
+                                                             #elif str( $do_label_type.do_label_type.do_label_type_selector ) == 'float':
+                                                                 do.label = ${ do_label_type.do_label_type.do_label }
+                                                             #elif str( $do_label_type.do_label_type.do_label_type_selector ) == 'boolean':
+                                                                 do.label = ${ do_label_type.do_label_type.do_label }
+                                                             #elif str( $do_label_type.do_label_type.do_label_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 do.label = "${ do_label_type.do_label_type.do_label }"
+                                                             #elif str( $do_label_type.do_label_type.do_label_type_selector ) == 'NULL':
+                                                                 do.label = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $label_size_type.label_size_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $label_size_type.label_size_type.label_size_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $label_size_type.label_size_type.label_size_type_selector ) == 'dataset':
+                                                                 label.size = readRDS("${label_size_type.label_size_type.label_size}")
+                                                             #elif str( $label_size_type.label_size_type.label_size_type_selector ) == 'text':
+                                                                 label.size = "${ label_size_type.label_size_type.label_size }"
+                                                             #elif str( $label_size_type.label_size_type.label_size_type_selector ) == 'integer':
+                                                                 label.size = ${ label_size_type.label_size_type.label_size }
+                                                             #elif str( $label_size_type.label_size_type.label_size_type_selector ) == 'float':
+                                                                 label.size = ${ label_size_type.label_size_type.label_size }
+                                                             #elif str( $label_size_type.label_size_type.label_size_type_selector ) == 'boolean':
+                                                                 label.size = ${ label_size_type.label_size_type.label_size }
+                                                             #elif str( $label_size_type.label_size_type.label_size_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 label.size = "${ label_size_type.label_size_type.label_size }"
+                                                             #elif str( $label_size_type.label_size_type.label_size_type_selector ) == 'NULL':
+                                                                 label.size = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $no_legend_type.no_legend_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $no_legend_type.no_legend_type.no_legend_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $no_legend_type.no_legend_type.no_legend_type_selector ) == 'dataset':
+                                                                 no.legend = readRDS("${no_legend_type.no_legend_type.no_legend}")
+                                                             #elif str( $no_legend_type.no_legend_type.no_legend_type_selector ) == 'text':
+                                                                 no.legend = "${ no_legend_type.no_legend_type.no_legend }"
+                                                             #elif str( $no_legend_type.no_legend_type.no_legend_type_selector ) == 'integer':
+                                                                 no.legend = ${ no_legend_type.no_legend_type.no_legend }
+                                                             #elif str( $no_legend_type.no_legend_type.no_legend_type_selector ) == 'float':
+                                                                 no.legend = ${ no_legend_type.no_legend_type.no_legend }
+                                                             #elif str( $no_legend_type.no_legend_type.no_legend_type_selector ) == 'boolean':
+                                                                 no.legend = ${ no_legend_type.no_legend_type.no_legend }
+                                                             #elif str( $no_legend_type.no_legend_type.no_legend_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 no.legend = "${ no_legend_type.no_legend_type.no_legend }"
+                                                             #elif str( $no_legend_type.no_legend_type.no_legend_type_selector ) == 'NULL':
+                                                                 no.legend = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $coord_fixed_type.coord_fixed_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $coord_fixed_type.coord_fixed_type.coord_fixed_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $coord_fixed_type.coord_fixed_type.coord_fixed_type_selector ) == 'dataset':
+                                                                 coord.fixed = readRDS("${coord_fixed_type.coord_fixed_type.coord_fixed}")
+                                                             #elif str( $coord_fixed_type.coord_fixed_type.coord_fixed_type_selector ) == 'text':
+                                                                 coord.fixed = "${ coord_fixed_type.coord_fixed_type.coord_fixed }"
+                                                             #elif str( $coord_fixed_type.coord_fixed_type.coord_fixed_type_selector ) == 'integer':
+                                                                 coord.fixed = ${ coord_fixed_type.coord_fixed_type.coord_fixed }
+                                                             #elif str( $coord_fixed_type.coord_fixed_type.coord_fixed_type_selector ) == 'float':
+                                                                 coord.fixed = ${ coord_fixed_type.coord_fixed_type.coord_fixed }
+                                                             #elif str( $coord_fixed_type.coord_fixed_type.coord_fixed_type_selector ) == 'boolean':
+                                                                 coord.fixed = ${ coord_fixed_type.coord_fixed_type.coord_fixed }
+                                                             #elif str( $coord_fixed_type.coord_fixed_type.coord_fixed_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 coord.fixed = "${ coord_fixed_type.coord_fixed_type.coord_fixed }"
+                                                             #elif str( $coord_fixed_type.coord_fixed_type.coord_fixed_type_selector ) == 'NULL':
+                                                                 coord.fixed = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $no_axes_type.no_axes_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $no_axes_type.no_axes_type.no_axes_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $no_axes_type.no_axes_type.no_axes_type_selector ) == 'dataset':
+                                                                 no.axes = readRDS("${no_axes_type.no_axes_type.no_axes}")
+                                                             #elif str( $no_axes_type.no_axes_type.no_axes_type_selector ) == 'text':
+                                                                 no.axes = "${ no_axes_type.no_axes_type.no_axes }"
+                                                             #elif str( $no_axes_type.no_axes_type.no_axes_type_selector ) == 'integer':
+                                                                 no.axes = ${ no_axes_type.no_axes_type.no_axes }
+                                                             #elif str( $no_axes_type.no_axes_type.no_axes_type_selector ) == 'float':
+                                                                 no.axes = ${ no_axes_type.no_axes_type.no_axes }
+                                                             #elif str( $no_axes_type.no_axes_type.no_axes_type_selector ) == 'boolean':
+                                                                 no.axes = ${ no_axes_type.no_axes_type.no_axes }
+                                                             #elif str( $no_axes_type.no_axes_type.no_axes_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 no.axes = "${ no_axes_type.no_axes_type.no_axes }"
+                                                             #elif str( $no_axes_type.no_axes_type.no_axes_type_selector ) == 'NULL':
+                                                                 no.axes = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $dark_theme_type.dark_theme_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $dark_theme_type.dark_theme_type.dark_theme_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $dark_theme_type.dark_theme_type.dark_theme_type_selector ) == 'dataset':
+                                                                 dark.theme = readRDS("${dark_theme_type.dark_theme_type.dark_theme}")
+                                                             #elif str( $dark_theme_type.dark_theme_type.dark_theme_type_selector ) == 'text':
+                                                                 dark.theme = "${ dark_theme_type.dark_theme_type.dark_theme }"
+                                                             #elif str( $dark_theme_type.dark_theme_type.dark_theme_type_selector ) == 'integer':
+                                                                 dark.theme = ${ dark_theme_type.dark_theme_type.dark_theme }
+                                                             #elif str( $dark_theme_type.dark_theme_type.dark_theme_type_selector ) == 'float':
+                                                                 dark.theme = ${ dark_theme_type.dark_theme_type.dark_theme }
+                                                             #elif str( $dark_theme_type.dark_theme_type.dark_theme_type_selector ) == 'boolean':
+                                                                 dark.theme = ${ dark_theme_type.dark_theme_type.dark_theme }
+                                                             #elif str( $dark_theme_type.dark_theme_type.dark_theme_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 dark.theme = "${ dark_theme_type.dark_theme_type.dark_theme }"
+                                                             #elif str( $dark_theme_type.dark_theme_type.dark_theme_type_selector ) == 'NULL':
+                                                                 dark.theme = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $plot_order_type.plot_order_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $plot_order_type.plot_order_type.plot_order_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $plot_order_type.plot_order_type.plot_order_type_selector ) == 'dataset':
+                                                                 plot.order = readRDS("${plot_order_type.plot_order_type.plot_order}")
+                                                             #elif str( $plot_order_type.plot_order_type.plot_order_type_selector ) == 'text':
+                                                                 plot.order = "${ plot_order_type.plot_order_type.plot_order }"
+                                                             #elif str( $plot_order_type.plot_order_type.plot_order_type_selector ) == 'integer':
+                                                                 plot.order = ${ plot_order_type.plot_order_type.plot_order }
+                                                             #elif str( $plot_order_type.plot_order_type.plot_order_type_selector ) == 'float':
+                                                                 plot.order = ${ plot_order_type.plot_order_type.plot_order }
+                                                             #elif str( $plot_order_type.plot_order_type.plot_order_type_selector ) == 'boolean':
+                                                                 plot.order = ${ plot_order_type.plot_order_type.plot_order }
+                                                             #elif str( $plot_order_type.plot_order_type.plot_order_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 plot.order = "${ plot_order_type.plot_order_type.plot_order }"
+                                                             #elif str( $plot_order_type.plot_order_type.plot_order_type_selector ) == 'NULL':
+                                                                 plot.order = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $cells_highlight_type.cells_highlight_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $cells_highlight_type.cells_highlight_type.cells_highlight_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $cells_highlight_type.cells_highlight_type.cells_highlight_type_selector ) == 'dataset':
+                                                                 cells.highlight = readRDS("${cells_highlight_type.cells_highlight_type.cells_highlight}")
+                                                             #elif str( $cells_highlight_type.cells_highlight_type.cells_highlight_type_selector ) == 'text':
+                                                                 cells.highlight = "${ cells_highlight_type.cells_highlight_type.cells_highlight }"
+                                                             #elif str( $cells_highlight_type.cells_highlight_type.cells_highlight_type_selector ) == 'integer':
+                                                                 cells.highlight = ${ cells_highlight_type.cells_highlight_type.cells_highlight }
+                                                             #elif str( $cells_highlight_type.cells_highlight_type.cells_highlight_type_selector ) == 'float':
+                                                                 cells.highlight = ${ cells_highlight_type.cells_highlight_type.cells_highlight }
+                                                             #elif str( $cells_highlight_type.cells_highlight_type.cells_highlight_type_selector ) == 'boolean':
+                                                                 cells.highlight = ${ cells_highlight_type.cells_highlight_type.cells_highlight }
+                                                             #elif str( $cells_highlight_type.cells_highlight_type.cells_highlight_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 cells.highlight = "${ cells_highlight_type.cells_highlight_type.cells_highlight }"
+                                                             #elif str( $cells_highlight_type.cells_highlight_type.cells_highlight_type_selector ) == 'NULL':
+                                                                 cells.highlight = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $cols_highlight_type.cols_highlight_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $cols_highlight_type.cols_highlight_type.cols_highlight_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $cols_highlight_type.cols_highlight_type.cols_highlight_type_selector ) == 'dataset':
+                                                                 cols.highlight = readRDS("${cols_highlight_type.cols_highlight_type.cols_highlight}")
+                                                             #elif str( $cols_highlight_type.cols_highlight_type.cols_highlight_type_selector ) == 'text':
+                                                                 cols.highlight = "${ cols_highlight_type.cols_highlight_type.cols_highlight }"
+                                                             #elif str( $cols_highlight_type.cols_highlight_type.cols_highlight_type_selector ) == 'integer':
+                                                                 cols.highlight = ${ cols_highlight_type.cols_highlight_type.cols_highlight }
+                                                             #elif str( $cols_highlight_type.cols_highlight_type.cols_highlight_type_selector ) == 'float':
+                                                                 cols.highlight = ${ cols_highlight_type.cols_highlight_type.cols_highlight }
+                                                             #elif str( $cols_highlight_type.cols_highlight_type.cols_highlight_type_selector ) == 'boolean':
+                                                                 cols.highlight = ${ cols_highlight_type.cols_highlight_type.cols_highlight }
+                                                             #elif str( $cols_highlight_type.cols_highlight_type.cols_highlight_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 cols.highlight = "${ cols_highlight_type.cols_highlight_type.cols_highlight }"
+                                                             #elif str( $cols_highlight_type.cols_highlight_type.cols_highlight_type_selector ) == 'NULL':
+                                                                 cols.highlight = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $sizes_highlight_type.sizes_highlight_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $sizes_highlight_type.sizes_highlight_type.sizes_highlight_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $sizes_highlight_type.sizes_highlight_type.sizes_highlight_type_selector ) == 'dataset':
+                                                                 sizes.highlight = readRDS("${sizes_highlight_type.sizes_highlight_type.sizes_highlight}")
+                                                             #elif str( $sizes_highlight_type.sizes_highlight_type.sizes_highlight_type_selector ) == 'text':
+                                                                 sizes.highlight = "${ sizes_highlight_type.sizes_highlight_type.sizes_highlight }"
+                                                             #elif str( $sizes_highlight_type.sizes_highlight_type.sizes_highlight_type_selector ) == 'integer':
+                                                                 sizes.highlight = ${ sizes_highlight_type.sizes_highlight_type.sizes_highlight }
+                                                             #elif str( $sizes_highlight_type.sizes_highlight_type.sizes_highlight_type_selector ) == 'float':
+                                                                 sizes.highlight = ${ sizes_highlight_type.sizes_highlight_type.sizes_highlight }
+                                                             #elif str( $sizes_highlight_type.sizes_highlight_type.sizes_highlight_type_selector ) == 'boolean':
+                                                                 sizes.highlight = ${ sizes_highlight_type.sizes_highlight_type.sizes_highlight }
+                                                             #elif str( $sizes_highlight_type.sizes_highlight_type.sizes_highlight_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 sizes.highlight = "${ sizes_highlight_type.sizes_highlight_type.sizes_highlight }"
+                                                             #elif str( $sizes_highlight_type.sizes_highlight_type.sizes_highlight_type_selector ) == 'NULL':
+                                                                 sizes.highlight = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $plot_title_type.plot_title_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $plot_title_type.plot_title_type.plot_title_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $plot_title_type.plot_title_type.plot_title_type_selector ) == 'dataset':
+                                                                 plot.title = readRDS("${plot_title_type.plot_title_type.plot_title}")
+                                                             #elif str( $plot_title_type.plot_title_type.plot_title_type_selector ) == 'text':
+                                                                 plot.title = "${ plot_title_type.plot_title_type.plot_title }"
+                                                             #elif str( $plot_title_type.plot_title_type.plot_title_type_selector ) == 'integer':
+                                                                 plot.title = ${ plot_title_type.plot_title_type.plot_title }
+                                                             #elif str( $plot_title_type.plot_title_type.plot_title_type_selector ) == 'float':
+                                                                 plot.title = ${ plot_title_type.plot_title_type.plot_title }
+                                                             #elif str( $plot_title_type.plot_title_type.plot_title_type_selector ) == 'boolean':
+                                                                 plot.title = ${ plot_title_type.plot_title_type.plot_title }
+                                                             #elif str( $plot_title_type.plot_title_type.plot_title_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 plot.title = "${ plot_title_type.plot_title_type.plot_title }"
+                                                             #elif str( $plot_title_type.plot_title_type.plot_title_type_selector ) == 'NULL':
+                                                                 plot.title = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $vector_friendly_type.vector_friendly_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $vector_friendly_type.vector_friendly_type.vector_friendly_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $vector_friendly_type.vector_friendly_type.vector_friendly_type_selector ) == 'dataset':
+                                                                 vector.friendly = readRDS("${vector_friendly_type.vector_friendly_type.vector_friendly}")
+                                                             #elif str( $vector_friendly_type.vector_friendly_type.vector_friendly_type_selector ) == 'text':
+                                                                 vector.friendly = "${ vector_friendly_type.vector_friendly_type.vector_friendly }"
+                                                             #elif str( $vector_friendly_type.vector_friendly_type.vector_friendly_type_selector ) == 'integer':
+                                                                 vector.friendly = ${ vector_friendly_type.vector_friendly_type.vector_friendly }
+                                                             #elif str( $vector_friendly_type.vector_friendly_type.vector_friendly_type_selector ) == 'float':
+                                                                 vector.friendly = ${ vector_friendly_type.vector_friendly_type.vector_friendly }
+                                                             #elif str( $vector_friendly_type.vector_friendly_type.vector_friendly_type_selector ) == 'boolean':
+                                                                 vector.friendly = ${ vector_friendly_type.vector_friendly_type.vector_friendly }
+                                                             #elif str( $vector_friendly_type.vector_friendly_type.vector_friendly_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 vector.friendly = "${ vector_friendly_type.vector_friendly_type.vector_friendly }"
+                                                             #elif str( $vector_friendly_type.vector_friendly_type.vector_friendly_type_selector ) == 'NULL':
+                                                                 vector.friendly = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $png_file_type.png_file_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $png_file_type.png_file_type.png_file_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $png_file_type.png_file_type.png_file_type_selector ) == 'dataset':
+                                                                 png.file = readRDS("${png_file_type.png_file_type.png_file}")
+                                                             #elif str( $png_file_type.png_file_type.png_file_type_selector ) == 'text':
+                                                                 png.file = "${ png_file_type.png_file_type.png_file }"
+                                                             #elif str( $png_file_type.png_file_type.png_file_type_selector ) == 'integer':
+                                                                 png.file = ${ png_file_type.png_file_type.png_file }
+                                                             #elif str( $png_file_type.png_file_type.png_file_type_selector ) == 'float':
+                                                                 png.file = ${ png_file_type.png_file_type.png_file }
+                                                             #elif str( $png_file_type.png_file_type.png_file_type_selector ) == 'boolean':
+                                                                 png.file = ${ png_file_type.png_file_type.png_file }
+                                                             #elif str( $png_file_type.png_file_type.png_file_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 png.file = "${ png_file_type.png_file_type.png_file }"
+                                                             #elif str( $png_file_type.png_file_type.png_file_type_selector ) == 'NULL':
+                                                                 png.file = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $png_arguments_type.png_arguments_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $png_arguments_type.png_arguments_type.png_arguments_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $png_arguments_type.png_arguments_type.png_arguments_type_selector ) == 'dataset':
+                                                                 png.arguments = readRDS("${png_arguments_type.png_arguments_type.png_arguments}")
+                                                             #elif str( $png_arguments_type.png_arguments_type.png_arguments_type_selector ) == 'text':
+                                                                 png.arguments = "${ png_arguments_type.png_arguments_type.png_arguments }"
+                                                             #elif str( $png_arguments_type.png_arguments_type.png_arguments_type_selector ) == 'integer':
+                                                                 png.arguments = ${ png_arguments_type.png_arguments_type.png_arguments }
+                                                             #elif str( $png_arguments_type.png_arguments_type.png_arguments_type_selector ) == 'float':
+                                                                 png.arguments = ${ png_arguments_type.png_arguments_type.png_arguments }
+                                                             #elif str( $png_arguments_type.png_arguments_type.png_arguments_type_selector ) == 'boolean':
+                                                                 png.arguments = ${ png_arguments_type.png_arguments_type.png_arguments }
+                                                             #elif str( $png_arguments_type.png_arguments_type.png_arguments_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 png.arguments = "${ png_arguments_type.png_arguments_type.png_arguments }"
+                                                             #elif str( $png_arguments_type.png_arguments_type.png_arguments_type_selector ) == 'NULL':
+                                                                 png.arguments = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+
+#if str( $na_value_type.na_value_type_selector ) == "True":
+${___USE_COMMA___}
+                                                         #if str( $na_value_type.na_value_type.na_value_type_selector ) != 'skip':
+                                                             #set $___USE_COMMA___ = ","
+
+                                                             #if str( $na_value_type.na_value_type.na_value_type_selector ) == 'dataset':
+                                                                 na.value = readRDS("${na_value_type.na_value_type.na_value}")
+                                                             #elif str( $na_value_type.na_value_type.na_value_type_selector ) == 'text':
+                                                                 na.value = "${ na_value_type.na_value_type.na_value }"
+                                                             #elif str( $na_value_type.na_value_type.na_value_type_selector ) == 'integer':
+                                                                 na.value = ${ na_value_type.na_value_type.na_value }
+                                                             #elif str( $na_value_type.na_value_type.na_value_type_selector ) == 'float':
+                                                                 na.value = ${ na_value_type.na_value_type.na_value }
+                                                             #elif str( $na_value_type.na_value_type.na_value_type_selector ) == 'boolean':
+                                                                 na.value = ${ na_value_type.na_value_type.na_value }
+                                                             #elif str( $na_value_type.na_value_type.na_value_type_selector ) == 'select':
+                                                                 #raise ValueError( 'not implemented' )
+                                                                 na.value = "${ na_value_type.na_value_type.na_value }"
+                                                             #elif str( $na_value_type.na_value_type.na_value_type_selector ) == 'NULL':
+                                                                 na.value = NULL
+                                                             #end if
+                                                         #end if
+                                                         
+#end if
+${___USE_COMMA___}
+                                                #set $___USE_COMMA___ = ","
+                                                #for eli in $___ellipsis___:
+                                                    #if str( $eli.argument_type.argument_type_selector ) != 'skip':
+                                                         #set $___USE_COMMA___ = ","
+
+                                                         #if str( $eli.argument_type.argument_type_selector ) == 'dataset':
+                                                             ${eli.argument_name} = readRDS("${eli.argument_type.argument}")
+                                                         #elif str( $eli.argument_type.argument_type_selector ) == 'text':
+                                                             ${eli.argument_name} = "${eli.argument_type.argument}"
+                                                         #elif str( $eli.argument_type.argument_type_selector ) == 'integer':
+                                                             ${eli.argument_name} = ${eli.argument_type.argument}
+                                                         #elif str( $eli.argument_type.argument_type_selector ) == 'float':
+                                                             ${eli.argument_name} = ${eli.argument_type.argument}
+                                                         #elif str( $eli.argument_type.argument_type_selector ) == 'boolean':
+                                                             ${eli.argument_name} = ${eli.argument_type.argument}
+                                                         #elif str( $eli.argument_type.argument_type_selector ) == 'select':
+                                                             #raise ValueError( 'not implemented' )
+                                                             ${eli.argument_name} = "${eli.argument_type.argument}"
+                                                         #elif str( $eli.argument_type.argument_type_selector ) == 'NULL':
+                                                             ${eli.argument_name} = NULL
+                                                         #end if
+                                                     #end if
+                                                #end for
+                                                
+)
+#if "output_r_dataset" in $include_files:
+    saveRDS(rval, file = "${output_r_dataset}", ascii = FALSE, version = 2, compress = TRUE )
+#end if
+
+    ]]>
+         </configfile>
+    </configfiles>
+    <inputs>
+        
+        <conditional name="object_type">
+            <param name="object_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="object: Provide value"/>
+            <when value="True">
+                
+        <conditional name="object_type">
+            <param name="object_type_selector" type="select" label="object: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="object" type="data" format="rds" label="object" help="$object"/>
+            </when>
+            <when value="text">
+                <param name="object" type="text" value="" label="object" help="$object"/>
+            </when>
+            <when value="integer">
+                <param name="object" type="integer" value="" label="object" help="$object"/>
+            </when>
+            <when value="float">
+                <param name="object" type="float" value="" label="object" help="$object"/>
+            </when>
+            <when value="boolean">
+                <param name="object" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="object" help="$object"/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="reduction_use_type">
+            <param name="reduction_use_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="reduction_use: Provide value"/>
+            <when value="True">
+                <param name="reduction_use" type="text" value="pca" label="reduction.use" help='$reduction.use&#10;[1] "pca"'/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="dim_1_type">
+            <param name="dim_1_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="dim_1: Provide value"/>
+            <when value="True">
+                <param name="dim_1" type="float" value="1.0" label="dim.1" help="$dim.1&#10;[1] 1"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="dim_2_type">
+            <param name="dim_2_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="dim_2: Provide value"/>
+            <when value="True">
+                <param name="dim_2" type="float" value="2.0" label="dim.2" help="$dim.2&#10;[1] 2"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="cells_use_type">
+            <param name="cells_use_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="cells_use: Provide value"/>
+            <when value="True">
+                
+        <conditional name="cells_use_type">
+            <param name="cells_use_type_selector" type="select" label="cells_use: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="cells_use" type="data" format="rds" label="cells.use" help="$cells.use&#10;NULL"/>
+            </when>
+            <when value="text">
+                <param name="cells_use" type="text" value="" label="cells.use" help="$cells.use&#10;NULL"/>
+            </when>
+            <when value="integer">
+                <param name="cells_use" type="integer" value="" label="cells.use" help="$cells.use&#10;NULL"/>
+            </when>
+            <when value="float">
+                <param name="cells_use" type="float" value="" label="cells.use" help="$cells.use&#10;NULL"/>
+            </when>
+            <when value="boolean">
+                <param name="cells_use" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="cells.use" help="$cells.use&#10;NULL"/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="pt_size_type">
+            <param name="pt_size_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="pt_size: Provide value"/>
+            <when value="True">
+                <param name="pt_size" type="float" value="1.0" label="pt.size" help="$pt.size&#10;[1] 1"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="do_return_type">
+            <param name="do_return_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="do_return: Provide value"/>
+            <when value="True">
+                <param name="do_return" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="False" label="do.return" help="$do.return&#10;[1] FALSE"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="do_bare_type">
+            <param name="do_bare_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="do_bare: Provide value"/>
+            <when value="True">
+                <param name="do_bare" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="False" label="do.bare" help="$do.bare&#10;[1] FALSE"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="cols_use_type">
+            <param name="cols_use_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="cols_use: Provide value"/>
+            <when value="True">
+                
+        <conditional name="cols_use_type">
+            <param name="cols_use_type_selector" type="select" label="cols_use: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="cols_use" type="data" format="rds" label="cols.use" help="$cols.use&#10;NULL"/>
+            </when>
+            <when value="text">
+                <param name="cols_use" type="text" value="" label="cols.use" help="$cols.use&#10;NULL"/>
+            </when>
+            <when value="integer">
+                <param name="cols_use" type="integer" value="" label="cols.use" help="$cols.use&#10;NULL"/>
+            </when>
+            <when value="float">
+                <param name="cols_use" type="float" value="" label="cols.use" help="$cols.use&#10;NULL"/>
+            </when>
+            <when value="boolean">
+                <param name="cols_use" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="cols.use" help="$cols.use&#10;NULL"/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="group_by_type">
+            <param name="group_by_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="group_by: Provide value"/>
+            <when value="True">
+                <param name="group_by" type="text" value="ident" label="group.by" help='$group.by&#10;[1] "ident"'/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="pt_shape_type">
+            <param name="pt_shape_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="pt_shape: Provide value"/>
+            <when value="True">
+                
+        <conditional name="pt_shape_type">
+            <param name="pt_shape_type_selector" type="select" label="pt_shape: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="pt_shape" type="data" format="rds" label="pt.shape" help="$pt.shape&#10;NULL"/>
+            </when>
+            <when value="text">
+                <param name="pt_shape" type="text" value="" label="pt.shape" help="$pt.shape&#10;NULL"/>
+            </when>
+            <when value="integer">
+                <param name="pt_shape" type="integer" value="" label="pt.shape" help="$pt.shape&#10;NULL"/>
+            </when>
+            <when value="float">
+                <param name="pt_shape" type="float" value="" label="pt.shape" help="$pt.shape&#10;NULL"/>
+            </when>
+            <when value="boolean">
+                <param name="pt_shape" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="pt.shape" help="$pt.shape&#10;NULL"/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="do_hover_type">
+            <param name="do_hover_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="do_hover: Provide value"/>
+            <when value="True">
+                <param name="do_hover" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="False" label="do.hover" help="$do.hover&#10;[1] FALSE"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="data_hover_type">
+            <param name="data_hover_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="data_hover: Provide value"/>
+            <when value="True">
+                <param name="data_hover" type="text" value="ident" label="data.hover" help='$data.hover&#10;[1] "ident"'/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="do_identify_type">
+            <param name="do_identify_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="do_identify: Provide value"/>
+            <when value="True">
+                <param name="do_identify" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="False" label="do.identify" help="$do.identify&#10;[1] FALSE"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="do_label_type">
+            <param name="do_label_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="do_label: Provide value"/>
+            <when value="True">
+                <param name="do_label" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="False" label="do.label" help="$do.label&#10;[1] FALSE"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="label_size_type">
+            <param name="label_size_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="label_size: Provide value"/>
+            <when value="True">
+                <param name="label_size" type="float" value="4.0" label="label.size" help="$label.size&#10;[1] 4"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="no_legend_type">
+            <param name="no_legend_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="no_legend: Provide value"/>
+            <when value="True">
+                <param name="no_legend" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="False" label="no.legend" help="$no.legend&#10;[1] FALSE"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="coord_fixed_type">
+            <param name="coord_fixed_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="coord_fixed: Provide value"/>
+            <when value="True">
+                <param name="coord_fixed" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="False" label="coord.fixed" help="$coord.fixed&#10;[1] FALSE"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="no_axes_type">
+            <param name="no_axes_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="no_axes: Provide value"/>
+            <when value="True">
+                <param name="no_axes" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="False" label="no.axes" help="$no.axes&#10;[1] FALSE"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="dark_theme_type">
+            <param name="dark_theme_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="dark_theme: Provide value"/>
+            <when value="True">
+                <param name="dark_theme" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="False" label="dark.theme" help="$dark.theme&#10;[1] FALSE"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="plot_order_type">
+            <param name="plot_order_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="plot_order: Provide value"/>
+            <when value="True">
+                
+        <conditional name="plot_order_type">
+            <param name="plot_order_type_selector" type="select" label="plot_order: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="plot_order" type="data" format="rds" label="plot.order" help="$plot.order&#10;NULL"/>
+            </when>
+            <when value="text">
+                <param name="plot_order" type="text" value="" label="plot.order" help="$plot.order&#10;NULL"/>
+            </when>
+            <when value="integer">
+                <param name="plot_order" type="integer" value="" label="plot.order" help="$plot.order&#10;NULL"/>
+            </when>
+            <when value="float">
+                <param name="plot_order" type="float" value="" label="plot.order" help="$plot.order&#10;NULL"/>
+            </when>
+            <when value="boolean">
+                <param name="plot_order" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="plot.order" help="$plot.order&#10;NULL"/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="cells_highlight_type">
+            <param name="cells_highlight_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="cells_highlight: Provide value"/>
+            <when value="True">
+                
+        <conditional name="cells_highlight_type">
+            <param name="cells_highlight_type_selector" type="select" label="cells_highlight: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="cells_highlight" type="data" format="rds" label="cells.highlight" help="$cells.highlight&#10;NULL"/>
+            </when>
+            <when value="text">
+                <param name="cells_highlight" type="text" value="" label="cells.highlight" help="$cells.highlight&#10;NULL"/>
+            </when>
+            <when value="integer">
+                <param name="cells_highlight" type="integer" value="" label="cells.highlight" help="$cells.highlight&#10;NULL"/>
+            </when>
+            <when value="float">
+                <param name="cells_highlight" type="float" value="" label="cells.highlight" help="$cells.highlight&#10;NULL"/>
+            </when>
+            <when value="boolean">
+                <param name="cells_highlight" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="cells.highlight" help="$cells.highlight&#10;NULL"/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="cols_highlight_type">
+            <param name="cols_highlight_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="cols_highlight: Provide value"/>
+            <when value="True">
+                <param name="cols_highlight" type="text" value="red" label="cols.highlight" help='$cols.highlight&#10;[1] "red"'/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="sizes_highlight_type">
+            <param name="sizes_highlight_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="sizes_highlight: Provide value"/>
+            <when value="True">
+                <param name="sizes_highlight" type="float" value="1.0" label="sizes.highlight" help="$sizes.highlight&#10;[1] 1"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="plot_title_type">
+            <param name="plot_title_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="plot_title: Provide value"/>
+            <when value="True">
+                
+        <conditional name="plot_title_type">
+            <param name="plot_title_type_selector" type="select" label="plot_title: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="plot_title" type="data" format="rds" label="plot.title" help="$plot.title&#10;NULL"/>
+            </when>
+            <when value="text">
+                <param name="plot_title" type="text" value="" label="plot.title" help="$plot.title&#10;NULL"/>
+            </when>
+            <when value="integer">
+                <param name="plot_title" type="integer" value="" label="plot.title" help="$plot.title&#10;NULL"/>
+            </when>
+            <when value="float">
+                <param name="plot_title" type="float" value="" label="plot.title" help="$plot.title&#10;NULL"/>
+            </when>
+            <when value="boolean">
+                <param name="plot_title" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="plot.title" help="$plot.title&#10;NULL"/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="vector_friendly_type">
+            <param name="vector_friendly_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="vector_friendly: Provide value"/>
+            <when value="True">
+                <param name="vector_friendly" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="False" label="vector.friendly" help="$vector.friendly&#10;[1] FALSE"/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="png_file_type">
+            <param name="png_file_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="png_file: Provide value"/>
+            <when value="True">
+                
+        <conditional name="png_file_type">
+            <param name="png_file_type_selector" type="select" label="png_file: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="png_file" type="data" format="rds" label="png.file" help="$png.file&#10;NULL"/>
+            </when>
+            <when value="text">
+                <param name="png_file" type="text" value="" label="png.file" help="$png.file&#10;NULL"/>
+            </when>
+            <when value="integer">
+                <param name="png_file" type="integer" value="" label="png.file" help="$png.file&#10;NULL"/>
+            </when>
+            <when value="float">
+                <param name="png_file" type="float" value="" label="png.file" help="$png.file&#10;NULL"/>
+            </when>
+            <when value="boolean">
+                <param name="png_file" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="png.file" help="$png.file&#10;NULL"/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="png_arguments_type">
+            <param name="png_arguments_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="png_arguments: Provide value"/>
+            <when value="True">
+                
+        <conditional name="png_arguments_type">
+            <param name="png_arguments_type_selector" type="select" label="png_arguments: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="png_arguments" type="data" format="rds" label="png.arguments" help="$png.arguments&#10;c(10, 10, 100)"/>
+            </when>
+            <when value="text">
+                <param name="png_arguments" type="text" value="" label="png.arguments" help="$png.arguments&#10;c(10, 10, 100)"/>
+            </when>
+            <when value="integer">
+                <param name="png_arguments" type="integer" value="" label="png.arguments" help="$png.arguments&#10;c(10, 10, 100)"/>
+            </when>
+            <when value="float">
+                <param name="png_arguments" type="float" value="" label="png.arguments" help="$png.arguments&#10;c(10, 10, 100)"/>
+            </when>
+            <when value="boolean">
+                <param name="png_arguments" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="png.arguments" help="$png.arguments&#10;c(10, 10, 100)"/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <conditional name="na_value_type">
+            <param name="na_value_type_selector" type="boolean" truevalue="True" falsevalue="False" checked="True" label="na_value: Provide value"/>
+            <when value="True">
+                <param name="na_value" type="text" value="grey50" label="na.value" help='$na.value&#10;[1] "grey50"'/>
+            </when>
+            <when value="False">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        
+        <repeat name="___ellipsis___" title="Additional argument">
+            <param name="argument_name" type="text" value="" label="Name for argument" help=""/>
+            
+        <conditional name="argument_type">
+            <param name="argument_type_selector" type="select" label="argument: type of input">
+                <option value="dataset" selected="True">Dataset</option>
+                <option value="text" selected="False">Text</option>
+                <option value="integer" selected="False">Integer</option>
+                <option value="float" selected="False">Integer</option>
+                <option value="boolean" selected="False">Boolean</option>
+                <option value="skip" selected="False">Skip</option>
+                <option value="NULL" selected="False">NULL</option>
+                <option value="NA" selected="False">NA</option>
+            </param>
+            <when value="dataset">
+                <param name="argument" type="data" format="rds" label="Argument value" help=""/>
+            </when>
+            <when value="text">
+                <param name="argument" type="text" value="" label="Argument value" help=""/>
+            </when>
+            <when value="integer">
+                <param name="argument" type="integer" value="" label="Argument value" help=""/>
+            </when>
+            <when value="float">
+                <param name="argument" type="float" value="" label="Argument value" help=""/>
+            </when>
+            <when value="boolean">
+                <param name="argument" type="boolean" truevalue="TRUE" falsevalue="FALSE" checked="" label="Argument value" help=""/>
+            </when>
+            <when value="skip">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NULL">
+                <!-- Do nothing here -->
+            </when>
+            <when value="NA">
+                <!-- Do nothing here -->
+            </when>
+        </conditional>
+
+        </repeat>
+
+        <param name="include_outputs" type="select" multiple="True" label="Datasets to create">
+            <option value="output_r_dataset" selected="true">Results in RDS format</option>
+            <option value="output_r_script" selected="false">R script</option>
+        </param>
+    </inputs>
+    <outputs>
+        <data format="rds" name="output_r_dataset" label="${tool.name} on ${on_string} (RDS)">
+            <filter>"output_r_dataset" in include_outputs</filter>
+        </data>
+        <data format="txt" name="output_r_script" label="${tool.name} on ${on_string} (Rscript)">
+            <filter>"output_r_script" in include_outputs</filter>
+        </data>
+    </outputs>
+    <help><![CDATA[
+Automatically Parsed R Help
+===========================
+
+Title
+-----
+
+::
+  
+  Dimensional reduction plot 
+
+Name
+----
+
+::
+  
+  DimPlot 
+
+Alias
+-----
+
+::
+  
+  DimPlot 
+
+Description
+-----------
+
+::
+  
+  
+   Graphs the output of a dimensional reduction technique (PCA by default).
+   Cells are colored by their identity class.
+   
+
+Usage
+-----
+
+::
+  
+  
+   DimPlot(object, reduction.use = "pca", dim.1 = 1, dim.2 = 2,
+     cells.use = NULL, pt.size = 1, do.return = FALSE, do.bare = FALSE,
+     cols.use = NULL, group.by = "ident", pt.shape = NULL,
+     do.hover = FALSE, data.hover = "ident", do.identify = FALSE,
+     do.label = FALSE, label.size = 4, no.legend = FALSE,
+     coord.fixed = FALSE, no.axes = FALSE, dark.theme = FALSE,
+     plot.order = NULL, cells.highlight = NULL, cols.highlight = "red",
+     sizes.highlight = 1, plot.title = NULL, vector.friendly = FALSE,
+     png.file = NULL, png.arguments = c(10, 10, 100), na.value = "grey50",
+     ...)
+   
+
+Arguments
+---------
+
+::
+  
+  
+   object Seurat object 
+   
+   reduction.use Which dimensionality reduction to use. Default is
+   "pca", can also be "tsne", or "ica", assuming these are precomputed. 
+   
+   dim.1 Dimension for x-axis (default 1) 
+   
+   dim.2 Dimension for y-axis (default 2) 
+   
+   cells.use Vector of cells to plot (default is all cells) 
+   
+   pt.size Adjust point size for plotting 
+   
+   do.return Return a ggplot2 object (default : FALSE) 
+   
+   do.bare Do only minimal formatting (default : FALSE) 
+   
+   cols.use Vector of colors, each color corresponds to an identity
+   class. By default, ggplot assigns colors. 
+   
+   group.by Group (color) cells in different ways (for example, orig.ident) 
+   
+   pt.shape If NULL, all points are circles (default). You can specify any
+   cell attribute (that can be pulled with FetchData) allowing for both
+   different colors and different shapes on cells. 
+   
+   do.hover Enable hovering over points to view information 
+   
+   data.hover Data to add to the hover, pass a character vector of
+   features to add. Defaults to cell name and ident. Pass 'NULL' to clear extra
+   information. 
+   
+   do.identify Opens a locator session to identify clusters of cells. 
+   
+   do.label Whether to label the clusters 
+   
+   label.size Sets size of labels 
+   
+   no.legend Setting to TRUE will remove the legend 
+   
+   coord.fixed Use a fixed scale coordinate system (for spatial coordinates). Default is FALSE. 
+   
+   no.axes Setting to TRUE will remove the axes 
+   
+   dark.theme Use a dark theme for the plot 
+   
+   plot.order Specify the order of plotting for the idents. This can be
+   useful for crowded plots if points of interest are being buried. Provide
+   either a full list of valid idents or a subset to be plotted last (on top). 
+   
+   cells.highlight A list of character or numeric vectors of cells to
+   highlight. If only one group of cells desired, can simply
+   pass a vector instead of a list. If set, colors selected cells to the color(s)
+   in  cols.highlight  and other cells black (white if dark.theme = TRUE);
+    will also resize to the size(s) passed to  sizes.highlight 
+   
+   cols.highlight A vector of colors to highlight the cells as; will
+   repeat to the length groups in cells.highlight 
+   
+   sizes.highlight Size of highlighted cells; will repeat to the length
+   groups in cells.highlight 
+   
+   plot.title Title for plot 
+   
+   vector.friendly FALSE by default. If TRUE, points are flattened into
+   a PNG, while axes/labels retain full vector resolution. Useful for producing
+   AI-friendly plots with large numbers of cells. 
+   
+   png.file Used only if vector.friendly is TRUE. Location for temporary
+   PNG file. 
+   
+   png.arguments Used only if vector.friendly is TRUE. Vector of three
+   elements (PNG width, PNG height, PNG DPI) to be used for temporary PNG.
+   Default is c(10,10,100) 
+   
+   na.value Color value for NA points when using custom scale. 
+   
+   ... Extra parameters to FeatureLocator for do.identify = TRUE 
+   
+
+Value
+-----
+
+::
+  
+  
+   If do.return==TRUE, returns a ggplot2 object. Otherwise, only
+   graphical output.
+   
+
+Seealso
+-------
+
+::
+  
+  
+   FeatureLocator 
+   
+
+Examples
+--------
+
+::
+  
+  
+   DimPlot(object = pbmc_small)
+    ]]></help>
+<tests>
+    <test>
+    </test>
+</tests>
+<citations>
+</citations>
+</tool>
+<!-- Created automatically using R2-G2: https://github.com/blankenberg/r2g2 -->
